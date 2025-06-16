@@ -104,7 +104,7 @@ const Contact = () => {
 
               <div className="space-y-4">
                 <Link
-                  to="https:/wa.me/+966555475591"
+                 to="https://wa.me/966555475591"
                   target="_blank"
                   rel="noopener"
                   className="flex items-center gap-3 p-4 bg-green-500 hover:bg-green-600 rounded-md transition-colors duration-300"
