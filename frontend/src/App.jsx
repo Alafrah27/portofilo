@@ -71,7 +71,7 @@ function App() {
     <div className="App">
       <SEO
         title="Musdar.dev | Mern Stack Web Developer "
-        description="Welcome to Musdar.dev – I'm a skilled MERN Stack Developer specializing in building fast, scalable, and responsive web applications using MongoDB, Express.js, React, and Node.js. With a passion for clean code and modern design, I bring ideas to life through innovative full-stack solutions. Whether you're looking to develop a custom web app, improve user experience, or enhance performance, I'm here to help. Explore my portfolio and let’s create something powerful together."
+        description="Welcome to Musdar.dev – I'm a skilled MERN Stack Developer specializing in building fast, scalable, and responsive web applications using MongoDB, Express.js, React, and Node.js. With a passion for clean code and modern design, I bring ideas to life through innovative full-stack solutions. Whether you're looking to develop a custom web app, improve user experience, or enhance performance, I'm here to help. Explore my portfolio and lets create something powerful together."
       />
       <Navbar activeSection={activeSection} />
 
