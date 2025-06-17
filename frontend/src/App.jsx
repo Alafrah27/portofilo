@@ -70,8 +70,8 @@ function App() {
   return (
     <div className="App">
       <SEO
-        title="Musdar.dev | Web Developer and Designer"
-        description="Explore Musdar.dev, a passionate web developer and designer showcasing innovative projects, skills, and insights in web development and design. Discover your next digital partner today!"
+        title="Musdar.dev | Mern Stack Web Developer "
+        description="Welcome to Musdar.dev – I'm a skilled MERN Stack Developer specializing in building fast, scalable, and responsive web applications using MongoDB, Express.js, React, and Node.js. With a passion for clean code and modern design, I bring ideas to life through innovative full-stack solutions. Whether you're looking to develop a custom web app, improve user experience, or enhance performance, I'm here to help. Explore my portfolio and let’s create something powerful together."
       />
       <Navbar activeSection={activeSection} />
 
