@@ -1,21 +1,21 @@
 import { Suspense, lazy, useEffect } from 'react'
 import Navbar from './components/Navbar'
-import Services from './components/Services'
-import WhyChooseUs from './components/WhyChooseUs'
-import CaseStudies from './components/CaseStudies'
-import AboutCompany from './components/AboutCompany'
-import CTASection from './components/CTASection'
-import Footer from './components/Footer'
+import Hero from './components/Hero'
 import SEO from './components/SEO'
-import GoToTop from './components/GoToTop'
 import LoadingPage from './components/LazyPage'
 import ScrollIndicator from './components/ScrollIndicator'
 import { useScrollAnimation } from './hooks/useScrollAnimation'
 import { useActiveSection } from './hooks/useActiveSection'
 import { useTranslation } from 'react-i18next'
 
-// Lazy load Hero for performance
-const LazyHero = lazy(() => import('./components/Hero'))
+// Lazy load below-the-fold components to reduce initial bundle size
+const Services = lazy(() => import('./components/Services'))
+const WhyChooseUs = lazy(() => import('./components/WhyChooseUs'))
+const CaseStudies = lazy(() => import('./components/CaseStudies'))
+const AboutCompany = lazy(() => import('./components/AboutCompany'))
+const CTASection = lazy(() => import('./components/CTASection'))
+const Footer = lazy(() => import('./components/Footer'))
+const GoToTop = lazy(() => import('./components/GoToTop'))
 
 function App() {
   const activeSection = useActiveSection()
@@ -43,19 +43,21 @@ function App() {
       <ScrollIndicator activeSection={activeSection} />
 
       <main>
-        <Suspense fallback={<LoadingPage />}>
-          <LazyHero />
-        </Suspense>
+        <Hero />
 
-        <Services />
-        <WhyChooseUs />
-        <CaseStudies />
-        <AboutCompany />
-        <CTASection />
+        <Suspense fallback={<LoadingPage />}>
+          <Services />
+          <WhyChooseUs />
+          <CaseStudies />
+          <AboutCompany />
+          <CTASection />
+        </Suspense>
       </main>
 
-      <GoToTop />
-      <Footer />
+      <Suspense fallback={null}>
+        <GoToTop />
+        <Footer />
+      </Suspense>
     </div>
   )
 }
