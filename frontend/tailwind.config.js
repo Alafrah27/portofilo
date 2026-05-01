@@ -7,51 +7,46 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          100: '#e4d8ff',
-          200: '#c8b2ff',
-          300: '#ac8bff',
-          400: '#9065ff',
-          500: '#743eff',
-          600: '#5c32cc',
-          700: '#442599',
-          800: '#2e1966',
-          900: '#170c33',
+        dark: {
+          900: '#050505',
+          800: '#0A0A0B',
+          700: '#121214',
+          600: '#1C1C1F',
+          500: '#2A2A2E',
         },
-        secondary: {
-          100: '#f0f0f0',
-          200: '#e0e0e0',
-          300: '#d1d1d1',
-          400: '#c2c2c2',
-          500: '#b2b2b2',
-          600: '#8e8e8e',
-          700: '#6b6b6b',
-          800: '#474747',
-          900: '#242424',
+        primary: {
+          100: '#d1fae5',
+          200: '#a7f3d0',
+          300: '#6ee7b7',
+          400: '#34d399',
+          500: '#10b981', // Emerald tech color
+          600: '#059669',
+          700: '#047857',
+          800: '#065f46',
+          900: '#064e3b',
         },
         accent: {
-          100: '#fff8e1',
-          200: '#ffecb3',
-          300: '#ffe082',
-          400: '#ffd54f',
-          500: '#ffca28',
-          600: '#ffc107',
-          700: '#ffb300',
-          800: '#ffa000',
-          900: '#ff8f00',
+          100: '#cffafe',
+          200: '#a5f3fc',
+          300: '#67e8f9',
+          400: '#22d3ee',
+          500: '#06b6d4', // Cyan tech accent
+          600: '#0891b2',
+          700: '#0e7490',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        heading: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Poppins', 'Cairo', 'system-ui', 'sans-serif'],
+        heading: ['Poppins', 'Cairo', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(to right, #6a11cb, #2575fc)',
-        'gradient-purple': 'linear-gradient(90deg, #7928ca, #ff0080)',
+        'gradient-glow': 'linear-gradient(to right, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.15))',
+        'gradient-primary': 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in',
         'slide-up': 'slideUp 0.5s ease-out',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         fadeIn: {
@@ -63,6 +58,10 @@ export default {
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
       },
+      boxShadow: {
+        'glow': '0 0 20px -5px rgba(16, 185, 129, 0.4)',
+        'glow-lg': '0 0 30px -5px rgba(16, 185, 129, 0.5)',
+      }
     },
   },
   plugins: [],

@@ -1,21 +1,17 @@
-import { StrictMode, Suspense, lazy } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-// import App from './App.jsx'
-import './index.css'
-import { HelmetProvider } from 'react-helmet-async'
 import { BrowserRouter } from 'react-router-dom'
-import LoadingPage from './components/LazyPage.jsx'
-
-const LazyComponent = lazy(() => import('./App.jsx'))
+import { HelmetProvider } from 'react-helmet-async'
+import './i18n'
+import App from './App.jsx'
+import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <HelmetProvider>
-        <Suspense fallback={<LoadingPage />}>
-          <LazyComponent />
-        </Suspense>
+        <App />
       </HelmetProvider>
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 )
