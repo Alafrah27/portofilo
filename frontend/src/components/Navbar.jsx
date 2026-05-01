@@ -57,6 +57,8 @@ const Navbar = ({ activeSection }) => {
             <img 
               src="/musdar-logo.png" 
               alt="Musdar.dev Logo" 
+              width="180"
+              height="64"
               className="h-14 md:h-16 w-auto object-contain transition-all duration-300 brightness-0 invert opacity-90 group-hover:opacity-100"
               loading='eager'
               fetchPriority="high"
