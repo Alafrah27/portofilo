@@ -1,91 +1,57 @@
-import { useState, useEffect, lazy, Suspense, } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import Navbar from './components/Navbar'
-import About from './components/About'
-import SocialLinks from './components/SocialLinks'
-import Projects from './components/Projects'
-import Contact from './components/Contact'
+import Services from './components/Services'
+import WhyChooseUs from './components/WhyChooseUs'
+import CaseStudies from './components/CaseStudies'
+import AboutCompany from './components/AboutCompany'
+import CTASection from './components/CTASection'
 import Footer from './components/Footer'
 import SEO from './components/SEO'
 import GoToTop from './components/GoToTop'
 import LoadingPage from './components/LazyPage'
-import SkillTools from './components/SkillTools'
-// import Hero from './components/Hero'
+import ScrollIndicator from './components/ScrollIndicator'
+import { useScrollAnimation } from './hooks/useScrollAnimation'
+import { useActiveSection } from './hooks/useActiveSection'
+import { useTranslation } from 'react-i18next'
 
-// Lazy load components
-
+// Lazy load Hero for performance
 const LazyHero = lazy(() => import('./components/Hero'))
 
-// Fixed typo: SKillLazy -> SkillsLazy
-
 function App() {
-  const [activeSection, setActiveSection] = useState('hero')
+  const activeSection = useActiveSection()
+  useScrollAnimation()
 
+  const { i18n } = useTranslation();
+
+  // Sync RTL layout direction with language
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = document.querySelectorAll('section')
-      const scrollPosition = window.scrollY + 200
-
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop
-        const sectionHeight = section.offsetHeight
-
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-          setActiveSection(section.id)
-        }
-      })
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Animation on scroll observer
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active')
-          }
-        })
-      },
-      { threshold: 0.1 }
-    )
-
-    // Use a timeout to ensure DOM is ready
-    const timer = setTimeout(() => {
-      document.querySelectorAll('.animate-on-scroll').forEach(el => {
-        observer.observe(el)
-      })
-    }, 100)
-
-    return () => {
-      clearTimeout(timer)
-      document.querySelectorAll('.animate-on-scroll').forEach(el => {
-        observer.unobserve(el)
-      })
-    }
-  }, [])
+    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
 
   return (
-    <div className="App">
+    <div className="App bg-dark-900 min-h-screen">
       <SEO
-        title="Musdar.dev | Mern Stack Web Developer "
-        description="Welcome to Musdar.dev – I'm a skilled MERN Stack Developer specializing in building fast, scalable, and responsive web applications using MongoDB, Express.js, React, and Node.js. With a passion for clean code and modern design, I bring ideas to life through innovative full-stack solutions. Whether you're looking to develop a custom web app, improve user experience, or enhance performance, I'm here to help. Explore my portfolio and lets create something powerful together."
+        title="Musdar.dev | Enterprise Software Development Agency"
+        description="Musdar.dev is a premium software development agency building scalable web applications, mobile platforms, and custom SaaS solutions for modern businesses."
+        keywords="web development, mobile development, software development, SaaS, React, Node.js, custom software, Musdar, musdar.dev, software company, react development, node.js development, saas development, custom software development, react.js, node.js, saas, web development company, mobile development company, software development company, web development agency, mobile development agency, software development agency, software development services, mobile app development, web app development, custom software development services, mobile application development services, web application development services,
+         custom software development services"
+
       />
+
       <Navbar activeSection={activeSection} />
+      <ScrollIndicator activeSection={activeSection} />
 
       <main>
         <Suspense fallback={<LoadingPage />}>
           <LazyHero />
         </Suspense>
 
-        <About />
-        <SocialLinks />
-        <Projects />
-        <SkillTools />
-
-        <Contact />
+        <Services />
+        <WhyChooseUs />
+        <CaseStudies />
+        <AboutCompany />
+        <CTASection />
       </main>
 
       <GoToTop />
