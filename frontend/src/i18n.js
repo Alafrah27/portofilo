@@ -107,7 +107,7 @@ const resources = {
           { "label": "Projects Delivered", "value": "50+" },
           { "label": "Client Satisfaction", "value": "99%" },
           { "label": "Lines of Code", "value": "1M+" },
-          { "label": "Years Experience", "value": "3+" }
+          { "label": "Years Experience", "value": "5+" }
         ]
       },
       // CTA Section
@@ -154,9 +154,9 @@ const resources = {
         "start_project": "ابدأ مشروعك"
       },
       "hero": {
-        "tagline":"نبني تطبيقات منصات رقمية تساعد شريكتك على النمو والتوسع بسرعة",
-        "title_1": "نبني حلولاً رقمية",
-        "title_2": "قابلة للتوسع والنمو.",
+        "tagline":"نحوّل الأفكار إلى برمجيات قابلة للتوس",
+        "title_1": "نبنى تطبيقات و منصات رقمية",
+        "title_2": "لمساعدتك على النمو و التوسع بسرعة.",
         "description": "نمكّن الشركات الحديثة من خلال تطبيقات ويب مخصصة، ومنصات هواتف محمولة، وبنية برمجية مدعومة بالذكاء الاصطناعي ومصممة لأعلى درجات الأداء.",
         "cta_primary": "ابدأ مشروعك",
         "cta_secondary": "شاهد أعمالنا",
@@ -242,7 +242,7 @@ const resources = {
           { "label": "مشروع تم تسليمه", "value": "+50" },
           { "label": "نسبة رضا العملاء", "value": "99%" },
           { "label": "سطر برمجي", "value": "+1M" },
-          { "label": "سنوات من الخبرة", "value": "+3" }
+          { "label": "سنوات من الخبرة", "value": "+5" }
         ]
       },
       "cta": {
