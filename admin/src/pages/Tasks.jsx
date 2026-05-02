@@ -1,121 +1,46 @@
 import { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, Filter } from 'lucide-react';
+import TaskTable from '../components/tasks/TaskTable';
+import TaskModal from '../components/tasks/TaskModal';
 
 const Tasks = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tasks, setTasks] = useState([
-    { id: 1, title: 'Design database schema', project: 'E-Commerce Platform', status: 'done', priority: 'high' },
-    { id: 2, title: 'Setup authentication', project: 'Mobile Banking App', status: 'in-progress', priority: 'high' },
-    { id: 3, title: 'Create dashboard mockups', project: 'Internal Dashboard', status: 'todo', priority: 'medium' },
-    { id: 4, title: 'Write API documentation', project: 'E-Commerce Platform', status: 'todo', priority: 'low' },
+    { id: 1, title: 'Design database schema', project: 'E-Commerce Platform', status: 'done', priority: 'high', dueDate: 'Today' },
+    { id: 2, title: 'Setup authentication', project: 'Mobile Banking App', status: 'in-progress', priority: 'high', dueDate: 'Tomorrow' },
+    { id: 3, title: 'Create dashboard mockups', project: 'Internal Dashboard', status: 'todo', priority: 'medium', dueDate: 'May 5' },
+    { id: 4, title: 'Write API documentation', project: 'E-Commerce Platform', status: 'todo', priority: 'low', dueDate: 'May 8' },
   ]);
 
-  const getStatusBadge = (status) => {
-    switch(status) {
-      case 'done': return <span className="badge badge-green">Done</span>;
-      case 'in-progress': return <span className="badge badge-blue">In Progress</span>;
-      case 'todo': return <span className="badge badge-gray">To Do</span>;
-      default: return <span className="badge badge-gray">{status}</span>;
-    }
-  };
-
-  const getPriorityBadge = (priority) => {
-    switch(priority) {
-      case 'high': return <span className="text-red-400 font-medium text-sm">High</span>;
-      case 'medium': return <span className="text-yellow-400 font-medium text-sm">Medium</span>;
-      case 'low': return <span className="text-green-400 font-medium text-sm">Low</span>;
-      default: return <span className="text-gray-400 font-medium text-sm">{priority}</span>;
-    }
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <p className="text-gray-400">Track and manage project tasks.</p>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="btn-primary gap-2"
-        >
-          <Plus size={18} /> Add Task
-        </button>
-      </div>
-
-      <div className="admin-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-[#1c1c1f] border-b border-[#2a2a2e]">
-                <th className="p-4 text-sm font-medium text-gray-400">Task Title</th>
-                <th className="p-4 text-sm font-medium text-gray-400">Project</th>
-                <th className="p-4 text-sm font-medium text-gray-400">Priority</th>
-                <th className="p-4 text-sm font-medium text-gray-400">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task) => (
-                <tr key={task.id} className="border-b border-[#1c1c1f] hover:bg-[#121214] transition-colors">
-                  <td className="p-4 text-sm font-semibold text-white">{task.title}</td>
-                  <td className="p-4 text-sm text-gray-300">{task.project}</td>
-                  <td className="p-4">{getPriorityBadge(task.priority)}</td>
-                  <td className="p-4">{getStatusBadge(task.status)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Simple UI Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="admin-card w-full max-w-md p-6 relative">
-            <button 
-              onClick={() => setIsModalOpen(false)}
-              className="absolute right-4 top-4 text-gray-500 hover:text-white"
-            >
-              <X size={20} />
-            </button>
-            <h2 className="text-xl font-bold text-white mb-6">Add New Task</h2>
-            
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Task Title</label>
-                <input type="text" className="admin-input" placeholder="e.g. Implement Login" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Assign to Project</label>
-                <select className="admin-input">
-                  <option>E-Commerce Platform</option>
-                  <option>Mobile Banking App</option>
-                  <option>Internal Dashboard</option>
-                </select>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Priority</label>
-                  <select className="admin-input">
-                    <option>Low</option>
-                    <option>Medium</option>
-                    <option>High</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Status</label>
-                  <select className="admin-input">
-                    <option>To Do</option>
-                    <option>In Progress</option>
-                    <option>Done</option>
-                  </select>
-                </div>
-              </div>
-              <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="btn-secondary">Cancel</button>
-                <button type="submit" className="btn-primary">Save Task</button>
-              </div>
-            </form>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-8 h-[2px] bg-[#06b6d4]"></span>
+            <span className="text-[10px] font-bold text-[#06b6d4] uppercase tracking-[0.3em]">Operational Flow</span>
           </div>
+          <h2 className="text-3xl lg:text-4xl font-black text-white tracking-tight">Task Engine</h2>
+          <p className="text-gray-400 mt-2 max-w-md text-sm leading-relaxed">
+            Track development progress and manage daily operations. Stay on top of every milestone and deadline.
+          </p>
         </div>
-      )}
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <button className="w-14 h-14 rounded-2xl flex items-center justify-center text-gray-500 hover:text-white bg-[#121214] border border-[#1c1c1f] transition-all shrink-0">
+            <Filter size={20} />
+          </button>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="btn-primary flex-1 sm:flex-none gap-2.5 shadow-2xl shadow-[#06b6d4]/10 hover:shadow-[#06b6d4]/20 px-8 py-3.5 rounded-2xl text-sm font-bold bg-[#06b6d4] hover:bg-[#0891b2] border-none flex justify-center items-center"
+          >
+            <Plus size={18} /> New Task
+          </button>
+        </div>
+      </div>
+
+      <TaskTable tasks={tasks} />
+
+      <TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

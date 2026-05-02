@@ -1,17 +1,6 @@
-@import "tailwindcss";
-
-@theme {
-  --color-dark-900: #0a0a0b;
-  --color-dark-800: #121214;
-  --color-dark-700: #1c1c1f;
-  --color-dark-600: #2a2a2e;
-  
-  --color-primary-500: #10b981; /* Emerald/Teal */
-  --color-primary-600: #059669;
-  --color-primary-900: #064e3b;
-  
-  --color-accent-500: #06b6d4; /* Cyan */
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   :root {
@@ -19,82 +8,63 @@
   }
 
   body {
-    background-color: var(--color-dark-900);
-    color: #e5e7eb;
-    font-family: 'Inter', system-ui, sans-serif;
+    @apply bg-[#050505] text-gray-200 antialiased selection:bg-[#10b981]/30 selection:text-emerald-200;
+    font-family: 'Poppins', 'Cairo', sans-serif;
     margin: 0;
     padding: 0;
-    -webkit-font-smoothing: antialiased;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(161,51%,10%,1) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(188,86%,20%,0.1) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(161,51%,10%,1) 0, transparent 50%);
+  }
+
+  /* Grain/Noise Texture */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.03;
+    z-index: 9999;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 }
 
 @layer components {
   .admin-card {
-    background-color: var(--color-dark-800);
-    border: 1px solid var(--color-dark-700);
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    @apply bg-[#0a0a0b]/60 backdrop-blur-xl border border-white/[0.05] rounded-[2rem] shadow-2xl;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-[#10b981] to-[#06b6d4] text-white hover:from-[#059669] hover:to-[#0891b2] transition-all shadow-lg shadow-[#10b981]/20 active:scale-95;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
   }
 
   .admin-input {
-    background-color: var(--color-dark-900);
-    border: 1px solid var(--color-dark-700);
-    color: white;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    width: 100%;
-    transition: all 0.2s;
+    @apply bg-white/[0.02] border border-white/10 focus:border-[#10b981]/40 focus:ring-4 focus:ring-[#10b981]/5 text-white rounded-[1.5rem] py-4 px-6 text-sm transition-all placeholder:text-gray-700 outline-none;
   }
+}
 
-  .admin-input:focus {
-    outline: none;
-    border-color: var(--color-primary-500);
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-  }
+/* Animations */
+.animate-in {
+  animation: animate-in 0.7s ease-out;
+}
 
-  .btn-primary {
-    background-color: var(--color-primary-500);
-    color: white;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .btn-primary:hover {
-    background-color: var(--color-primary-600);
-  }
-
-  .btn-secondary {
-    background-color: var(--color-dark-700);
-    color: #e5e7eb;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-    border: 1px solid var(--color-dark-600);
-  }
-
-  .btn-secondary:hover {
-    background-color: var(--color-dark-600);
-  }
-  
-  /* Status Badges */
-  .badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  
-  .badge-green { background-color: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
-  .badge-blue { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
-  .badge-yellow { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
-  .badge-gray { background-color: var(--color-dark-700); color: #9ca3af; border: 1px solid var(--color-dark-600); }
-  .badge-purple { background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.2); }
+@keyframes animate-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

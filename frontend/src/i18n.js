@@ -4,6 +4,12 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
     translation: {
+      // SEO
+      "seo": {
+        "title": "Musdar.dev | Enterprise Software Development Agency",
+        "description": "Musdar.dev is a premium software development agency building scalable web applications, mobile platforms, and custom SaaS solutions for modern businesses.",
+        "keywords": "web development, mobile development, software development, SaaS, React, Node.js, custom software, Musdar, musdar.dev, software company, react development, node.js development, saas development, custom software development, react.js, node.js, saas, web development company, mobile development company, software development company, web development agency, mobile development agency, software development agency, software development services, mobile app development, web app development, custom software development services, mobile application development services, web application development services, custom software development services"
+      },
       // Navbar
       "nav": {
         "services": "Services",
@@ -16,8 +22,8 @@ const resources = {
       // Hero
       "hero": {
         "tagline": "Transforming ideas into scalable software",
-        "title_1": "We build digital",
-        "title_2": "solutions that scale.",
+        "title_1": "We build web & mobile systems",
+        "title_2": "that help you automate and increase ",
         "description": "Empowering modern businesses with custom web applications, mobile platforms, and AI-driven software architecture designed for peak performance.",
         "cta_primary": "Start Your Project",
         "cta_secondary": "View Case Studies",
@@ -107,7 +113,7 @@ const resources = {
           { "label": "Projects Delivered", "value": "50+" },
           { "label": "Client Satisfaction", "value": "99%" },
           { "label": "Lines of Code", "value": "1M+" },
-          { "label": "Years Experience", "value": "5+" }
+          { "label": "Years Experience", "value": "3+" }
         ]
       },
       // CTA Section
@@ -145,6 +151,11 @@ const resources = {
   },
   ar: {
     translation: {
+      "seo": {
+        "title": "مسدار | وكالة تطوير برمجيات المؤسسات والشركات",
+        "description": "وكالة مسدار هي شريكك التقني لتطوير تطبيقات ويب قابلة للتوسع، حلول الجوال المبتكرة، ومنصات SaaS مخصصة للشركات والمؤسسات الحديثة في السعودية والخليج.",
+        "keywords": "تطوير برمجيات، شركة برمجة، برمجة تطبيقات، تطوير ويب، برمجة تطبيقات الجوال، حلول SaaS، شركة تقنية، مسدار، تطوير برمجيات مخصصة، شركة برمجة في السعودية، تطوير تطبيقات الجوال، تطوير المواقع الإلكترونية، هندسة البرمجيات، تحول رقمي، برمجة مخصصة، ريأكت، نود جي اس، تطوير أنظمة الشركات"
+      },
       "nav": {
         "services": "خدماتنا",
         "why_us": "لماذا نحن",
@@ -154,9 +165,9 @@ const resources = {
         "start_project": "ابدأ مشروعك"
       },
       "hero": {
-        "tagline":"نحوّل الأفكار إلى برمجيات قابلة للتوس",
+        "tagline":"نحوّل الأفكار إلى برمجيات قابلة للتوسع",
         "title_1": "نبنى تطبيقات و منصات رقمية",
-        "title_2": "لمساعدتك على النمو و التوسع بسرعة.",
+        "title_2": "لمساعدت شركتك على النمو  بسرعة.",
         "description": "نمكّن الشركات الحديثة من خلال تطبيقات ويب مخصصة، ومنصات هواتف محمولة، وبنية برمجية مدعومة بالذكاء الاصطناعي ومصممة لأعلى درجات الأداء.",
         "cta_primary": "ابدأ مشروعك",
         "cta_secondary": "شاهد أعمالنا",
@@ -233,7 +244,7 @@ const resources = {
         }
       },
       "about": {
-        "badge": "عن مصدر",
+        "badge": "عن مسدار",
         "title_1": "نبني برمجيات",
         "title_2": "تدفع عجلة التقدم",
         "desc_1": "تأسيساً على الإيمان بأن البنية البرمجية القوية هي أساس الأعمال الحديثة، تتعاون Musdar.dev مع المنظمات ذات الرؤية المستقبلية لبناء منتجات رقمية قابلة للتوسع.",
@@ -242,7 +253,7 @@ const resources = {
           { "label": "مشروع تم تسليمه", "value": "+50" },
           { "label": "نسبة رضا العملاء", "value": "99%" },
           { "label": "سطر برمجي", "value": "+1M" },
-          { "label": "سنوات من الخبرة", "value": "+5" }
+          { "label": "سنوات من الخبرة", "value": "+3" }
         ]
       },
       "cta": {
