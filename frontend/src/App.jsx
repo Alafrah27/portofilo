@@ -18,22 +18,26 @@ function App() {
   const activeSection = useActiveSection()
   useScrollAnimation()
 
-  const { i18n } = useTranslation();
+  const {t, i18n } = useTranslation();
 
   // Sync RTL layout direction with language
   useEffect(() => {
     document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = i18n.language;
+
   }, [i18n.language]);
 
+  useEffect(() => {
+    // scroll to top
+    window.scrollTo(0, 0);
+
+  }, []);
   return (
     <div className="App bg-dark-900 min-h-screen">
       <SEO
-        title="Musdar.dev | Enterprise Software Development Agency"
-        description="Musdar.dev is a premium software development agency building scalable web applications, mobile platforms, and custom SaaS solutions for modern businesses."
-        keywords="web development, mobile development, software development, SaaS, React, Node.js, custom software, Musdar, musdar.dev, software company, react development, node.js development, saas development, custom software development, react.js, node.js, saas, web development company, mobile development company, software development company, web development agency, mobile development agency, software development agency, software development services, mobile app development, web app development, custom software development services, mobile application development services, web application development services,
-         custom software development services"
-
+        title={t('seo.title')}
+        description={t('seo.description')}
+        keywords={t('seo.keywords')}
       />
 
       <Navbar activeSection={activeSection} />
