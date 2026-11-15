@@ -17,12 +17,12 @@ export function getConfig(env = process.env) {
   if (env.JWT_ACCESS_SECRET === env.JWT_REFRESH_SECRET) {
     throw new Error('Access and refresh secrets must be different.');
   }
-  if (nodeEnv === 'production' && !env.ADMIN_ORIGINS) {
-    throw new Error('ADMIN_ORIGINS is required in production.');
-  }
-  const adminOrigins = (env.ADMIN_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
+  // A public-only deployment may start before the admin dashboard is deployed.
+  // Never trust development origins implicitly in production.
+  const configuredOrigins = env.ADMIN_ORIGINS?.trim();
+  const adminOrigins = (configuredOrigins || (nodeEnv === 'production' ? '' : 'http://localhost:5173,http://127.0.0.1:5173'))
     .split(',').map((origin) => origin.trim()).filter(Boolean);
-  if (!adminOrigins.length) throw new Error('At least one admin origin is required.');
+  if (configuredOrigins && !adminOrigins.length) throw new Error('At least one admin origin is required.');
   for (const origin of adminOrigins) {
     let parsed;
     try { parsed = new URL(origin); } catch { throw new Error('ADMIN_ORIGINS contains an invalid origin.'); }

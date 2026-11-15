@@ -280,7 +280,7 @@ test('configuration rejects missing or identical secrets and invalid origins', (
   assert.throws(() => getConfig({ ...environment, JWT_ACCESS_SECRET: '' }), /JWT_ACCESS_SECRET/);
   assert.throws(() => getConfig({ ...environment, JWT_REFRESH_SECRET: environment.JWT_ACCESS_SECRET }), /different/);
   assert.throws(() => getConfig({ ...environment, ADMIN_ORIGINS: 'https://example.com/path' }), /origins/);
-  assert.throws(() => getConfig({ ...environment, NODE_ENV: 'production', ADMIN_ORIGINS: '' }), /ADMIN_ORIGINS/);
+  assert.throws(() => getConfig({ ...environment, NODE_ENV: 'production', ADMIN_ORIGINS: ',' }), /origin/);
   assert.throws(() => getConfig({ ...environment, MONGO_URL: '' }), /MONGO_URL/);
   assert.throws(() => getConfig({ ...environment, MONGO_DB_NAME: 'admin' }), /application database/);
 });
