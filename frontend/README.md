@@ -60,13 +60,19 @@ frontend/
    The website is available at `http://localhost:5174`. The admin workspace uses port `5173`.
    Run the backend on port `5000`; Vite proxies `/api` to it so the featured case studies display saved admin projects.
    The public website fetches `/api/projects` without requiring sign-in and disables cross-origin credentials. Each project uses its first image as the cover and links to `/case-studies/:id`, which fetches `/api/projects/:id` to display the complete story and gallery. Direct links and refresh work with Vite and the existing SPA redirect in `public/_redirects`. Rich text is sanitized before rendering.
-   Set `VITE_API_URL` (including `/api`) to use another backend. Production defaults to the existing `https://protofilopanel.onrender.com/api` host; deploy the current backend there or set this variable to the backend serving `/api/projects`.
+   `.env.development` sets `VITE_API_BASE_URL=http://localhost:5000/api`. `.env.production` sets `VITE_API_BASE_URL=https://portofilo-5717.onrender.com/api`. Vite selects the matching file for development or production. Use `.env.development.local` for personal local overrides. The legacy `VITE_API_URL` is still supported when `VITE_API_BASE_URL` is unset.
 
 3. **Build for Production:**
    ```bash
    npm run build
    ```
    This will generate an optimized, minified bundle in the `dist/` directory.
+
+## Netlify deployment
+
+Set the site's base directory to `frontend`. `netlify.toml` sets the build command to `npm run build`, publish directory to `dist`, and the public production variable `VITE_API_BASE_URL=https://portofilo-5717.onrender.com/api`. Use that same key and value if configuring the environment in Netlify's dashboard. Rebuild after changing a Vite environment variable. The existing `public/_redirects` handles direct case-study route visits and refreshes.
+
+The public API uses no sign-in cookies and does not require `ADMIN_ORIGINS`. Never put JWT, database, or Cloudinary secrets in a `VITE_` variable.
 
 ## 🌍 Language Management (i18n)
 
