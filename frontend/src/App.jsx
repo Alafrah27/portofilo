@@ -1,4 +1,6 @@
-import { Suspense, useEffect } from 'react'
+import { useEffect } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import CaseStudyPage from './pages/CaseStudyPage'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Services from './components/Services'
@@ -14,24 +16,11 @@ import { useScrollAnimation } from './hooks/useScrollAnimation'
 import { useActiveSection } from './hooks/useActiveSection'
 import { useTranslation } from 'react-i18next'
 
-function App() {
+function HomePage() {
   const activeSection = useActiveSection()
   useScrollAnimation()
 
-  const {t, i18n } = useTranslation();
-
-  // Sync RTL layout direction with language
-  useEffect(() => {
-    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = i18n.language;
-
-  }, [i18n.language]);
-
-  useEffect(() => {
-    // scroll to top
-    window.scrollTo(0, 0);
-
-  }, []);
+  const { t } = useTranslation();
   return (
     <div className="App bg-dark-900 min-h-screen">
       <SEO
@@ -56,6 +45,26 @@ function App() {
       <Footer />
     </div>
   )
+}
+
+function App() {
+  const { i18n } = useTranslation()
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    document.documentElement.dir = i18n.dir()
+    document.documentElement.lang = i18n.language
+  }, [i18n, i18n.language])
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname])
+
+  return <Routes>
+    <Route path="/" element={<HomePage />} />
+    <Route path="/case-studies/:id" element={<CaseStudyPage />} />
+    <Route path="*" element={<Navigate to="/" replace />} />
+  </Routes>
 }
 
 export default App

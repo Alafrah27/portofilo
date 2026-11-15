@@ -57,7 +57,10 @@ frontend/
    ```bash
    npm run dev
    ```
-   The application will usually be available at `http://localhost:5173`.
+   The website is available at `http://localhost:5174`. The admin workspace uses port `5173`.
+   Run the backend on port `5000`; Vite proxies `/api` to it so the featured case studies display saved admin projects.
+   The public website fetches `/api/projects` without requiring sign-in and disables cross-origin credentials. Each project uses its first image as the cover and links to `/case-studies/:id`, which fetches `/api/projects/:id` to display the complete story and gallery. Direct links and refresh work with Vite and the existing SPA redirect in `public/_redirects`. Rich text is sanitized before rendering.
+   Set `VITE_API_URL` (including `/api`) to use another backend. Production defaults to the existing `https://protofilopanel.onrender.com/api` host; deploy the current backend there or set this variable to the backend serving `/api/projects`.
 
 3. **Build for Production:**
    ```bash
@@ -74,7 +77,6 @@ All copy text is managed inside `src/i18n.js`. To update a translation:
 *Note: Due to Vite caching, you may occasionally need to perform a hard refresh in your browser (F5) if i18n dictionary changes do not hot-reload immediately.*
 
 ## 📈 Next Steps & Backend Integration
-While this frontend is fully operational as a static site, it is designed to be paired with the **Musdar Admin Dashboard** and a Node.js/Express backend to dynamically pull:
-* Featured Case Studies
+Featured Case Studies are connected to the **Musdar Admin Dashboard** projects API. Additional future integrations include:
 * Dynamic Company Metrics
 * Service Offerings

@@ -1,108 +1,66 @@
-import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Briefcase, 
-  CheckSquare, 
-  Users, 
-  Settings, 
-  LogOut,
-  X,
-  Zap
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { useAuth } from '../auth/useAuth.js';
+import { NavLink, Link } from 'react-router-dom';
+import { LayoutDashboard, Briefcase, CheckSquare, LogOut, X, ArrowUpRight } from 'lucide-react';
 
-const Sidebar = ({ isOpen, onClose }) => {
-  const menuItems = [
-    { icon: <LayoutDashboard size={22} />, label: 'Studio', path: '/' },
-    { icon: <Briefcase size={22} />, label: 'Projects', path: '/projects' },
-    { icon: <CheckSquare size={22} />, label: 'Tasks', path: '/tasks' },
-    { icon: <Users size={22} />, label: 'Leads', path: '/leads' },
-  ];
+const menuItems = [
+  { icon: LayoutDashboard, label: 'Overview', path: '/' },
+  { icon: Briefcase, label: 'Projects', path: '/projects' },
+  { icon: CheckSquare, label: 'Tasks', path: '/tasks' },
+];
 
-  const bottomItems = [
-    { icon: <Settings size={22} />, label: 'Preferences', path: '/settings' },
-    { icon: <LogOut size={22} />, label: 'Sign Out', path: '/login' },
-  ];
-
-  const NavItem = ({ item }) => (
-    <NavLink
-      to={item.path}
-      onClick={() => window.innerWidth < 1024 && onClose()}
-      className={({ isActive }) => `
-        flex items-center gap-4 px-6 py-4 rounded-[1.5rem] transition-all duration-500 group relative
-        ${isActive 
-          ? 'bg-gradient-to-r from-[#10b981]/10 to-[#06b6d4]/10 text-white shadow-xl shadow-[#10b981]/5 border border-[#10b981]/10' 
-          : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.03]'}
-      `}
-    >
-      {({ isActive }) => (
-        <>
-          <span className={`${isActive ? 'text-[#10b981]' : 'group-hover:text-gray-300'} transition-colors`}>
-            {item.icon}
-          </span>
-          <span className="text-[11px] font-black uppercase tracking-[0.2em]">{item.label}</span>
-          {isActive && (
-            <motion.div 
-              layoutId="active-pill"
-              className="absolute left-0 w-1.5 h-6 bg-gradient-to-b from-[#10b981] to-[#06b6d4] rounded-r-full"
-            />
-          )}
-        </>
-      )}
-    </NavLink>
-  );
-
+const Sidebar = ({ onClose }) => {
+  const { user, logout } = useAuth();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState('');
+  const initials = (user?.email || '').slice(0, 2).toUpperCase();
+  const handleSignOut = async () => {
+    if (isSigningOut) return;
+    setIsSigningOut(true);
+    setSignOutError('');
+    try {
+      await logout();
+      onClose();
+    } catch (error) {
+      setSignOutError(error.message);
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
   return (
-      <aside className="h-full bg-[#050505] border-r border-white/5 flex flex-col">
-        {/* Logo Section */}
-        <div className="p-10 relative">
-          <div className="absolute top-10 left-10 w-12 h-12 bg-[#10b981]/20 rounded-full blur-2xl opacity-50"></div>
-          <div className="flex items-center justify-between mb-2 relative z-10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#10b981] to-[#06b6d4] flex items-center justify-center shadow-lg shadow-[#10b981]/20">
-                <Zap size={20} className="text-white fill-current" />
-              </div>
-              <h1 className="text-xl font-black text-white tracking-tighter">Musdar <span className="text-[#10b981]">.</span></h1>
-            </div>
-            <button onClick={onClose} className="lg:hidden p-2 text-gray-500 hover:text-white bg-white/5 rounded-xl transition-all">
-              <X size={20} />
-            </button>
-          </div>
-          <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.4em] ml-1">Creative Studio</p>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 px-6 space-y-3 custom-scrollbar overflow-y-auto py-4">
-          {menuItems.map((item) => (
-            <NavItem key={item.label} item={item} />
-          ))}
-          
-          <div className="pt-8 px-6">
-            <div className="h-[1px] bg-white/5 w-full"></div>
-          </div>
-
-          <div className="pt-8 space-y-3">
-            <p className="px-6 text-[9px] font-black text-gray-700 uppercase tracking-[0.4em] mb-4">Account Control</p>
-            {bottomItems.map((item) => (
-              <NavItem key={item.label} item={item} />
-            ))}
-          </div>
-        </nav>
-
-        {/* Human Profile Section */}
-        <div className="p-8 border-t border-white/5 bg-white/[0.01]">
-          <div className="flex items-center gap-4 p-4 rounded-[1.5rem] bg-white/[0.02] border border-white/5 group hover:border-[#10b981]/20 transition-all duration-500 cursor-pointer">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#10b981]/20 to-[#06b6d4]/20 flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform">
-              <span className="text-xs font-black text-[#10b981]">AM</span>
-            </div>
-            <div className="flex-1">
-              <p className="text-xs font-black text-white uppercase tracking-wider">Ali Musdar</p>
-              <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mt-0.5">Creative Director</p>
-            </div>
-          </div>
-        </div>
-      </aside>
+  <aside className="flex h-full flex-col border-r border-[#242427] bg-dark-800">
+    <div className="flex h-20 shrink-0 items-center justify-between px-7">
+      <Link to="/" onClick={onClose} aria-label="Musdar admin home" className="flex items-center gap-2.5">
+        <img src="/musdar-logo.png" alt="" className="h-9 w-9 object-contain brightness-0 invert" />
+        <span className="text-xl font-semibold tracking-tight text-white">Musdar<span className="text-primary-500">.dev</span></span>
+      </Link>
+      <button onClick={onClose} aria-label="Close navigation" className="rounded-lg p-2 text-gray-400 hover:bg-white/5 hover:text-white lg:hidden"><X size={18} /></button>
+    </div>
+    <div className="px-7 pb-8 pt-6">
+      <div className="inline-flex items-center gap-2 rounded-md border border-[#303035] bg-dark-700 px-2.5 py-1 text-[10px] tracking-widest text-gray-400"><span className="h-1.5 w-1.5 rounded-full bg-primary-500" /> ADMIN WORKSPACE</div>
+    </div>
+    <nav aria-label="Main navigation" className="custom-scrollbar flex-1 space-y-1.5 overflow-y-auto px-4">
+      <p className="px-3 pb-3 text-[10px] font-medium uppercase tracking-[.15em] text-gray-500">Workspace</p>
+      {menuItems.map(({ icon: Icon, label, path }) => (
+        <NavLink key={path} to={path} end={path === '/'} onClick={onClose} className={({ isActive }) => `flex items-center gap-3 rounded-lg border px-3 py-3 text-[13px] transition-colors ${isActive ? 'border-primary-500/20 bg-primary-500/10 text-primary-400' : 'border-transparent text-gray-400 hover:bg-white/[.03] hover:text-white'}`}>
+          <Icon size={18} strokeWidth={1.7} />{label}
+        </NavLink>
+      ))}
+    </nav>
+    <div className="mx-4 mb-6 mt-8 rounded-xl border border-[#242427] p-4">
+      <p className="text-xs font-medium text-white">Your work, out in the world.</p>
+      <p className="mt-2 text-[11px] leading-relaxed text-gray-500">Explore the Musdar portfolio.</p>
+      <a href={import.meta.env.VITE_WEBSITE_URL || 'https://musdar.com'} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-xs text-primary-400 hover:text-white">View website <ArrowUpRight size={15} /></a>
+    </div>
+    <div className="border-t border-[#242427] p-5">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-500/20 bg-primary-500/10 text-xs font-medium text-primary-400">{initials}</div>
+        <div className="min-w-0 flex-1"><p title={user?.email} className="truncate text-xs font-medium text-white">{user?.email}</p><p className="mt-1 text-[10px] text-gray-500">Administrator</p></div>
+        <button type="button" onClick={handleSignOut} disabled={isSigningOut} aria-label={isSigningOut ? 'Signing out' : 'Sign out'} title={isSigningOut ? 'Signing out…' : 'Sign out'} className="rounded-lg p-2 text-gray-500 hover:bg-white/5 hover:text-white disabled:opacity-50"><LogOut size={17} /></button>
+      </div>
+      {signOutError && <p role="alert" className="mt-3 text-[11px] leading-5 text-red-300">{signOutError}</p>}
+    </div>
+  </aside>
   );
 };
-
 export default Sidebar;

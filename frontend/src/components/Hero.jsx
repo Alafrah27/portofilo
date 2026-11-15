@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { scrollToSection } from '../utils/scrollTo';
 import { ArrowRight, Code, Cpu, Layers } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import './Hero.css';
 
 const Hero = memo(() => {
   const navigate = useNavigate();
@@ -17,53 +18,48 @@ const Hero = memo(() => {
   const isRTL = i18n.language === 'ar';
 
   return (
-    <section id="hero" className="min-h-screen relative flex items-center pt-20 overflow-hidden">
-      {/* Background with abstract grid and gradients instead of photo */}
-      <div className="absolute inset-0 bg-dark-900 z-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-600/20 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-600/20 rounded-full blur-[120px]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]"></div>
-      </div>
+    <section id="hero" aria-labelledby="hero-heading" className="hero-section relative isolate flex items-center overflow-hidden bg-dark-900">
+      <div aria-hidden="true" className="hero-backdrop pointer-events-none absolute inset-0 -z-10" />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-dark-800 border border-gray-700 text-sm text-gray-300 mb-8 animate-slide-up">
-            <span className="flex h-2 w-2 rounded-full bg-primary-500 animate-pulse-slow"></span>
+      <div className="container relative mx-auto container-padding">
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="hero-eyebrow mb-7 inline-flex max-w-full items-center gap-2.5 rounded-full border border-primary-400/15 bg-primary-500/5 px-3.5 py-2 text-[11px] font-medium leading-5 text-primary-200 sm:mb-8 sm:text-xs">
+            <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary-400 shadow-[0_0_10px_#34d39966]" />
             {t('hero.tagline')}
           </div>
-          
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            {t('hero.title_1')} <br className="hidden md:block"/>
-            <span className="gradient-text">{t('hero.title_2')}</span>
+
+          <h1 id="hero-heading" className="hero-heading mx-auto mb-6 max-w-4xl text-white">
+            <span className="block">{t('hero.title_1')}</span>
+            <span className="gradient-text mt-1 block">{t('hero.title_2')}</span>
           </h1>
-          
-          <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '0.2s' }}>
+
+          <p className="mx-auto mb-8 max-w-[35rem] text-[15px] leading-7 text-gray-400 sm:mb-9 sm:text-base sm:leading-8">
             {t('hero.description')}
           </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+
+          <div className="mx-auto flex max-w-sm flex-col items-center justify-center gap-3 sm:max-w-none sm:flex-row">
             <a 
-              href="#contact"
+              href="/#contact"
               onClick={(e) => handleNavClick(e, 'contact')}
-              className="btn btn-primary w-full sm:w-auto"
+              className="hero-cta inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-lg bg-primary-400 px-6 py-3 text-sm font-semibold text-dark-900 transition-colors hover:bg-primary-300 sm:w-auto"
             >
-              {t('hero.cta_primary')} <ArrowRight size={18} className={`mx-2 ${isRTL ? 'rotate-180' : ''}`} />
+              {t('hero.cta_primary')} <ArrowRight aria-hidden="true" size={17} className={isRTL ? 'rotate-180' : ''} />
             </a>
             <a
-              href="#case-studies"
+              href="/#case-studies"
               onClick={(e) => handleNavClick(e, 'case-studies')}
-              className="btn btn-secondary w-full sm:w-auto"
+              className="hero-cta inline-flex min-h-12 w-full items-center justify-center rounded-lg border border-gray-700/70 bg-white/[0.02] px-6 py-3 text-sm font-medium text-gray-200 transition-colors hover:border-gray-500 hover:bg-white/5 sm:w-auto"
             >
               {t('hero.cta_secondary')}
             </a>
           </div>
 
-          <div className="mt-20 pt-10 border-t border-gray-800 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-            <p className="text-sm text-gray-500 mb-6 uppercase tracking-wider font-semibold">{t('hero.tech_stack')}</p>
-            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60">
-              <div className="flex items-center gap-2 text-gray-300"><Code size={24} /> <span className="font-medium">React & Next.js</span></div>
-              <div className="flex items-center gap-2 text-gray-300"><Layers size={24} /> <span className="font-medium">Node.js</span></div>
-              <div className="flex items-center gap-2 text-gray-300"><Cpu size={24} /> <span className="font-medium">Cloud Native</span></div>
+          <div className="mx-auto mt-12 max-w-2xl border-t border-white/[0.06] pt-6 sm:mt-14 sm:pt-7">
+            <p className="mb-5 text-[10px] font-medium uppercase tracking-[0.16em] text-gray-500">{t('hero.tech_stack')}</p>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 text-xs text-gray-400 sm:gap-x-10 sm:text-sm">
+              <div className="flex items-center gap-2"><Code aria-hidden="true" size={17} className="text-gray-500" /> <span>React & Next.js</span></div>
+              <div className="flex items-center gap-2"><Layers aria-hidden="true" size={17} className="text-gray-500" /> <span>Node.js</span></div>
+              <div className="flex items-center gap-2"><Cpu aria-hidden="true" size={17} className="text-gray-500" /> <span>Cloud Native</span></div>
             </div>
           </div>
         </div>

@@ -22,9 +22,9 @@ const resources = {
       // Hero
       "hero": {
         "tagline": "Transforming ideas into scalable software",
-        "title_1": "We build web & mobile systems",
-        "title_2": "that help you automate and increase ",
-        "description": "Empowering modern businesses with custom web applications, mobile platforms, and AI-driven software architecture designed for peak performance.",
+        "title_1": "Web & mobile software.",
+        "title_2": "Made for your business.",
+        "description": "We turn your ideas into thoughtful websites, mobile apps, and business systems. Built to simplify your work and grow with you.",
         "cta_primary": "Start Your Project",
         "cta_secondary": "View Case Studies",
         "tech_stack": "Engineered with modern technologies"
@@ -97,10 +97,17 @@ const resources = {
         "loading": "Loading...",
         "error": "Error: Unable to load case studies",
         "empty": "New case studies are being prepared for publication.",
-        "metrics": {
-          "speed": "Faster Load",
-          "conversion": "Conversion"
-        }
+        "retry": "Try again",
+        "featured": "Featured project",
+        "case_study": "Case study",
+        "view": "View case study",
+        "visit_website": "Visit live website",
+        "view_named": "View case study: {{title}}",
+        "back": "Back to case studies",
+        "not_found": "Case study not found",
+        "not_found_description": "This project is unavailable or has been removed. Explore our other case studies.",
+        "image_alt": "{{title}} — project image {{index}}",
+        "open_image": "Open project image {{index}}"
       },
       // About Company
       "about": {
@@ -166,9 +173,9 @@ const resources = {
       },
       "hero": {
         "tagline":"نحوّل الأفكار إلى برمجيات قابلة للتوسع",
-        "title_1": "نبنى تطبيقات و منصات رقمية",
-        "title_2": "لمساعدت شركتك على النمو  بسرعة.",
-        "description": "نمكّن الشركات الحديثة من خلال تطبيقات ويب مخصصة، ومنصات هواتف محمولة، وبنية برمجية مدعومة بالذكاء الاصطناعي ومصممة لأعلى درجات الأداء.",
+        "title_1": "حلول للويب والجوال.",
+        "title_2": "مصممة لأعمالك.",
+        "description": "نحوّل أفكارك إلى مواقع وتطبيقات وأنظمة أعمال متكاملة، نبنيها لتبسيط عملك والنمو معك.",
         "cta_primary": "ابدأ مشروعك",
         "cta_secondary": "شاهد أعمالنا",
         "tech_stack": "مُصمم بأحدث التقنيات"
@@ -238,10 +245,17 @@ const resources = {
         "loading": "جاري التحميل...",
         "error": "خطأ: تعذر تحميل دراسات الحالة",
         "empty": "يتم الآن إعداد دراسات حالة جديدة للنشر.",
-        "metrics": {
-          "speed": "سرعة التحميل",
-          "conversion": "زيادة التحويلات"
-        }
+        "retry": "إعادة المحاولة",
+        "featured": "مشروع مميز",
+        "case_study": "دراسة حالة",
+        "view": "عرض دراسة الحالة",
+        "visit_website": "زيارة الموقع",
+        "view_named": "عرض دراسة الحالة: {{title}}",
+        "back": "العودة إلى دراسات الحالة",
+        "not_found": "دراسة الحالة غير موجودة",
+        "not_found_description": "هذا المشروع غير متاح أو تمت إزالته. يمكنك استكشاف دراسات الحالة الأخرى.",
+        "image_alt": "{{title}} — صورة المشروع {{index}}",
+        "open_image": "فتح صورة المشروع {{index}}"
       },
       "about": {
         "badge": "عن مسدار",

@@ -1,300 +1,81 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, Briefcase, Info, FileText, Image as ImageIcon, 
-  CheckCircle2, ChevronLeft, ChevronRight, UploadCloud 
-} from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { ImagePlus, Plus, X, Save, Edit3 } from 'lucide-react';
 import RichTextEditor from '../RichTextEditor';
 
-const ProjectModal = ({ 
-  isOpen, 
-  onClose, 
-  currentStep, 
-  setCurrentStep, 
-  formData, 
-  setFormData, 
-  images, 
-  setImages, 
-  handleSubmit,
-  fileInputRef,
-  isDragging,
-  handleDragOver,
-  handleDragLeave,
-  handleDrop,
-  handleFileInput,
-  removeImage
-}) => {
-  const steps = [
-    { id: 1, title: 'General Info', icon: <Info size={18} />, description: 'Basic project identity' },
-    { id: 2, title: 'Project Story', icon: <FileText size={18} />, description: 'Detailed case study content' },
-    { id: 3, title: 'Media Assets', icon: <ImageIcon size={18} />, description: 'Showcase visuals' },
-  ];
+export default function ProjectModal({ isOpen, mode, onClose, formData, setFormData, images, existingImages,
+  saving, error, onEdit, handleSubmit, fileInputRef, isDragging, handleDragOver, handleDragLeave,
+  handleDrop, handleFileInput, removeImage, clearImages }) {
+  const dialogRef = useRef(null);
+  const titleRef = useRef(null);
+  const preview = mode === 'preview';
+  const displayedImages = images.length ? images : existingImages.map((image, index) => ({
+    id: image.publicId, preview: image.url, name: `Image ${index + 1}`, existing: true,
+  }));
 
-  const stepVariants = {
-    hidden: { opacity: 0, x: 20 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.3, ease: 'easeOut' } },
-    exit: { opacity: 0, x: -20, transition: { duration: 0.2, ease: 'easeIn' } }
-  };
+  useEffect(() => {
+    if (isOpen) { dialogRef.current?.showModal(); titleRef.current?.focus(); }
+    else dialogRef.current?.close();
+  }, [isOpen]);
 
-  const handleNextStep = () => {
-    if (currentStep < 3) setCurrentStep(prev => prev + 1);
-  };
-
-  const handleBackStep = () => {
-    if (currentStep > 1) setCurrentStep(prev => prev - 1);
-  };
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 bg-[#0a0a0b]/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-[#121214] border border-[#2a2a2e] shadow-2xl rounded-3xl w-full max-w-4xl max-h-[95vh] flex flex-col relative overflow-hidden"
-          >
-            
-            {/* Stepper Header */}
-            <div className="bg-[#0a0a0b] border-b border-[#1c1c1f] px-4 sm:px-8 pt-8 pb-6 shrink-0">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981]">
-                    <Briefcase size={20} />
-                  </div>
-                  <div>
-                    <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-none">New Case Study</h2>
-                    <p className="text-[10px] sm:text-xs text-gray-400 mt-1.5 font-bold uppercase tracking-widest">Step {currentStep} of 3</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={onClose}
-                  className="text-gray-500 hover:text-white bg-[#1c1c1f] hover:bg-[#2a2a2e] p-2.5 rounded-xl transition-all"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between max-w-2xl mx-auto px-4 relative">
-                {/* Progress Line */}
-                <div className="absolute top-[18px] left-[10%] right-[10%] h-[2px] bg-[#1c1c1f] z-0">
-                  <div 
-                    className="h-full bg-[#10b981] transition-all duration-500 ease-out" 
-                    style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
-                  />
-                </div>
-
-                {steps.map((step) => (
-                  <div key={step.id} className="relative z-10 flex flex-col items-center">
-                    <div 
-                      className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 border-2 ${
-                        currentStep >= step.id 
-                          ? 'bg-[#10b981] border-[#10b981] text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
-                          : 'bg-[#121214] border-[#2a2a2e] text-gray-500'
-                      }`}
-                    >
-                      {currentStep > step.id ? <CheckCircle2 size={18} /> : step.icon}
-                    </div>
-                    <p className={`mt-2 text-[10px] font-black uppercase tracking-[0.2em] transition-colors duration-300 hidden sm:block ${
-                      currentStep >= step.id ? 'text-white' : 'text-gray-500'
-                    }`}>
-                      {step.title}
-                    </p>
-                  </div>
-                ))}
-              </div>
+  return <dialog ref={dialogRef} aria-labelledby="project-dialog-title"
+    onCancel={(event) => { event.preventDefault(); if (!saving) onClose(); }}
+    className="fixed inset-0 m-auto max-h-[94dvh] w-[calc(100%-2rem)] max-w-[960px] overflow-hidden rounded-xl border border-[#29292d] bg-[#090909] p-0 text-gray-300 backdrop:bg-black/80">
+    {isOpen && <form onSubmit={handleSubmit} aria-busy={saving} className="flex max-h-[calc(94dvh-2px)] flex-col">
+      <header className="flex shrink-0 items-start justify-between gap-4 px-5 py-5 sm:px-7 sm:py-6">
+        <div><p className="mb-2 flex items-center gap-2 text-[10px] text-gray-500">Portfolio <span className="text-gray-700">/</span> Case studies</p>
+          <h2 id="project-dialog-title" className="text-xl font-semibold tracking-tight text-white">{preview ? 'Case study preview' : mode === 'edit' ? 'Edit case study' : 'New case study'}</h2></div>
+        <button type="button" disabled={saving} onClick={onClose} aria-label="Close project dialog" className="rounded-md p-1.5 text-gray-500 hover:bg-white/5 hover:text-white"><X size={18} /></button>
+      </header>
+      <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain" role="region" aria-label="Project details" tabIndex={0}>
+      <fieldset disabled={saving} className="min-w-0 border-0 p-0">
+        {error && <p role="alert" className="mx-5 mb-2 rounded-lg border border-red-500/25 bg-red-500/5 p-3 text-sm text-red-300 sm:mx-7">{error}</p>}
+        <div className="grid md:grid-cols-[minmax(0,1fr)_260px]">
+          <div className="min-w-0 space-y-6 px-5 py-6 sm:px-7">
+            <div><label htmlFor="project-title" className="mb-2.5 block text-xs font-medium text-gray-200">Project name <span aria-hidden="true" className="text-primary-400">*</span></label>
+              <input id="project-title" ref={titleRef} name="title" required maxLength={200} readOnly={preview}
+                placeholder="Give your project a name" value={formData.title}
+                onChange={(event) => setFormData((data) => ({ ...data, title: event.target.value }))} className="admin-input w-full" /></div>
+            <div><label htmlFor="project-website-url" className="mb-2.5 block text-xs font-medium text-gray-200">Live website URL <span className="font-normal text-gray-500">(optional)</span></label>
+              <input id="project-website-url" name="websiteUrl" type="url" maxLength={2048} readOnly={preview}
+                placeholder="https://your-project.com" value={formData.websiteUrl || ''}
+                onChange={(event) => setFormData((data) => ({ ...data, websiteUrl: event.target.value }))} className="admin-input w-full" />
+              {preview && formData.websiteUrl && <a href={formData.websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs text-primary-400 hover:text-primary-300">Open live website ↗</a>}
             </div>
-            
-            {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-8 bg-[#121214]">
-              <AnimatePresence mode="wait">
-                {currentStep === 1 && (
-                  <motion.div 
-                    key="step1"
-                    variants={stepVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="space-y-6 max-w-2xl mx-auto"
-                  >
-                    <div className="bg-[#0a0a0b] p-6 sm:p-10 rounded-3xl border border-[#1c1c1f] space-y-8">
-                      <div>
-                        <label className="block text-[10px] font-black text-gray-500 mb-4 uppercase tracking-[0.2em]">Project Identity</label>
-                        <input 
-                          type="text" 
-                          className="admin-input w-full" 
-                          placeholder="e.g. Next-Gen FinTech Dashboard" 
-                          value={formData.title}
-                          onChange={(e) => setFormData({...formData, title: e.target.value})}
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-[10px] font-black text-gray-500 mb-4 uppercase tracking-[0.2em]">Brief Synopsis</label>
-                        <input 
-                          type="text" 
-                          className="admin-input w-full" 
-                          placeholder="A concise impact statement..." 
-                          value={formData.subtitle}
-                          onChange={(e) => setFormData({...formData, subtitle: e.target.value})}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-black text-gray-500 mb-4 uppercase tracking-[0.2em]">Current Status</label>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          {['planning', 'development', 'completed'].map((status) => (
-                            <button
-                              key={status}
-                              type="button"
-                              onClick={() => setFormData({...formData, status})}
-                              className={`px-4 py-4 rounded-2xl text-[11px] font-bold uppercase tracking-widest border transition-all ${
-                                formData.status === status 
-                                  ? 'bg-[#10b981]/10 border-[#10b981]/40 text-[#10b981] shadow-lg shadow-[#10b981]/5' 
-                                  : 'bg-[#121214] border-[#2a2a2e] text-gray-500 hover:border-gray-600'
-                              }`}
-                            >
-                              {status}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {currentStep === 2 && (
-                  <motion.div 
-                    key="step2"
-                    variants={stepVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="space-y-6"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-2">
-                        <FileText size={18} className="text-[#10b981]" />
-                        <h3 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">The Narrative</h3>
-                      </div>
-                      <p className="text-[10px] text-gray-500 font-medium italic">Articulate the challenge and the solution</p>
-                    </div>
-                    <RichTextEditor 
-                      content={formData.description}
-                      onChange={(html) => setFormData({...formData, description: html})}
-                      placeholder="Begin your story here..."
-                    />
-                  </motion.div>
-                )}
-
-                {currentStep === 3 && (
-                  <motion.div 
-                    key="step3"
-                    variants={stepVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="space-y-8"
-                  >
-                    <div 
-                      className={`relative border-2 border-dashed rounded-[2rem] p-8 sm:p-16 text-center transition-all duration-500 cursor-pointer ${
-                        isDragging 
-                          ? 'border-[#10b981] bg-[#10b981]/5 shadow-[0_0_60px_rgba(16,185,129,0.1)_inset]' 
-                          : 'border-[#2a2a2e] bg-[#0a0a0b] hover:border-[#10b981]/30 group'
-                      }`}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <input 
-                        type="file" 
-                        multiple 
-                        accept="image/*" 
-                        className="hidden" 
-                        ref={fileInputRef}
-                        onChange={handleFileInput}
-                      />
-                      <div className="flex flex-col items-center space-y-6">
-                        <div className="w-20 h-20 rounded-[2rem] bg-[#1c1c1f] flex items-center justify-center text-gray-500 group-hover:text-[#10b981] group-hover:scale-110 transition-all duration-500">
-                          <UploadCloud size={40} strokeWidth={1.5} />
-                        </div>
-                        <div>
-                          <p className="text-white font-black text-xl tracking-tight">Import Visual Assets</p>
-                          <p className="text-xs text-gray-600 font-bold uppercase tracking-[0.1em] mt-3">Drag & Drop or Click to Browse</p>
-                        </div>
-                        <button type="button" className="bg-[#1c1c1f] hover:bg-[#2a2a2e] text-white px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all border border-[#2a2a2e]">Open Explorer</button>
-                      </div>
-                    </div>
-
-                    {images.length > 0 && (
-                      <div className="space-y-6">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Asset Library</h4>
-                          <span className="text-[10px] bg-[#10b981]/10 text-[#10b981] px-4 py-1.5 rounded-xl font-black uppercase tracking-widest border border-[#10b981]/20">{images.length} Objects</span>
-                        </div>
-                        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4">
-                          {images.map((img) => (
-                            <div key={img.id} className="relative group aspect-video rounded-2xl overflow-hidden border border-[#2a2a2e] bg-[#0a0a0b] shadow-xl">
-                              <img 
-                                src={img.preview} 
-                                alt="Preview" 
-                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125"
-                              />
-                              <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                                <button 
-                                  type="button"
-                                  onClick={(e) => { e.stopPropagation(); removeImage(img.id); }}
-                                  className="w-12 h-12 bg-red-500/20 text-red-500 border border-red-500/40 rounded-2xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all transform scale-90 group-hover:scale-100"
-                                >
-                                  <X size={20} />
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-4 sm:px-8 py-6 border-t border-[#1c1c1f] flex flex-col sm:flex-row gap-4 justify-between items-center shrink-0 bg-[#0a0a0b]">
-              <button 
-                type="button" 
-                onClick={currentStep === 1 ? onClose : handleBackStep} 
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-gray-500 hover:text-white hover:bg-[#1c1c1f] transition-all text-[11px] uppercase tracking-[0.2em]"
-              >
-                {currentStep === 1 ? 'Abort Session' : <><ChevronLeft size={16} /> Previous Step</>}
+            <div><label id="project-story-label" className="mb-2.5 block text-xs font-medium text-gray-200">Project story <span aria-hidden="true" className="text-primary-400">*</span></label>
+              <RichTextEditor ariaLabelledBy="project-story-label" content={formData.description} readOnly={preview} disabled={saving}
+                onChange={(description) => setFormData((data) => ({ ...data, description }))}
+                placeholder="What was the challenge, and how did you solve it?" /></div>
+          </div>
+          <aside aria-label="Project images" className="space-y-5 border-t border-[#242427] bg-[#0d0d0e] px-5 py-6 sm:px-7 md:border-l md:border-t-0 md:px-5">
+            <div className="flex items-center justify-between"><h3 className="text-xs font-medium text-gray-200">Project images <span aria-hidden="true" className="text-primary-400">*</span></h3><span className="text-[10px] text-gray-500">{displayedImages.length}/10</span></div>
+            {!preview && <div>
+              <input ref={fileInputRef} type="file" multiple accept="image/jpeg,image/png,image/webp" aria-label="Upload project images" onChange={handleFileInput} className="sr-only" tabIndex={-1} />
+              <button type="button" onClick={() => fileInputRef.current?.click()} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
+                className={`flex w-full flex-col items-center justify-center gap-3 rounded-lg border border-dashed px-4 py-7 text-center ${isDragging ? 'border-primary-500 bg-primary-500/5' : 'border-[#39393e] hover:border-gray-500'}`}>
+                <ImagePlus size={24} strokeWidth={1.4} className="text-gray-500" /><span className="text-xs text-primary-400">{existingImages.length ? 'Choose replacement images' : 'Choose images'}</span><span className="text-[10px] text-gray-500">or drag & drop here</span>
               </button>
-
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                {currentStep < 3 ? (
-                  <button 
-                    type="button" 
-                    onClick={handleNextStep}
-                    className="btn-primary w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-[#10b981]/10"
-                  >
-                    Next Phase <ChevronRight size={16} />
-                  </button>
-                ) : (
-                  <button 
-                    type="button" 
-                    onClick={handleSubmit}
-                    className="btn-primary w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-[#10b981]/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                  >
-                    <CheckCircle2 size={16} /> Finalize Case Study
-                  </button>
-                ) }
-              </div>
-            </div>
-            
-          </motion.div>
+              <p className="mt-3 text-[10px] leading-5 text-gray-500">JPEG, PNG, WebP · Up to 5MB each.<br />The first image is your project cover.</p>
+              {existingImages.length > 0 && <p className="mt-2 text-[10px] leading-5 text-gray-400">New images replace the current gallery. Without new images, your gallery stays the same.</p>}
+              {existingImages.length > 0 && images.length > 0 && <button type="button" onClick={clearImages} className="mt-2 text-xs text-primary-400">Keep current images</button>}
+            </div>}
+            {displayedImages.length > 0 && <ul aria-label="Project image gallery" className="space-y-2">
+              {displayedImages.map((image, index) => <li key={image.id} className="flex items-center gap-2.5 rounded-md border border-[#29292d] p-2">
+                {preview ? <a href={image.preview} target="_blank" rel="noreferrer" aria-label={`Open image ${index + 1}`}><img src={image.preview} alt={`Project image ${index + 1}`} className="h-14 w-16 rounded object-cover" /></a> : <img src={image.preview} alt="" className="h-9 w-10 shrink-0 rounded object-cover" />}
+                <div className="min-w-0 flex-1"><p className="truncate text-[10px] text-gray-300">{image.file?.name || image.name}</p><p className="mt-1 text-[9px] text-gray-500">{index === 0 ? 'Cover image' : 'Gallery image'}</p></div>
+                {!preview && !image.existing && <button type="button" onClick={() => removeImage(image.id)} aria-label={`Remove ${image.file.name}`} className="rounded p-1 text-gray-500 hover:text-white"><X size={13} /></button>}
+              </li>)}
+            </ul>}
+          </aside>
         </div>
-      )}
-    </AnimatePresence>
-  );
-};
-
-export default ProjectModal;
+      </fieldset>
+      </div>
+      <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 bg-[#090909] px-5 py-4 sm:px-7">
+        <span role="status" className="text-[10px] text-gray-500">{saving ? 'Saving project and images…' : preview ? '' : '* Required fields'}</span>
+        <div className="ml-auto flex items-center gap-2.5"><button type="button" disabled={saving} onClick={onClose} className="btn-secondary">{preview ? 'Close' : 'Cancel'}</button>
+          {preview ? <button type="button" onClick={onEdit} className="btn-primary"><Edit3 size={16} />Edit case study</button>
+            : <button type="submit" disabled={saving} className="btn-primary">{mode === 'edit' ? <Save size={16} /> : <Plus size={16} />}{saving ? 'Saving…' : mode === 'edit' ? 'Save changes' : 'Create case study'}</button>}
+        </div>
+      </footer>
+    </form>}
+  </dialog>;
+}
