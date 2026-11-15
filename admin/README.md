@@ -28,7 +28,15 @@ On Render, set `ADMIN_ORIGINS` to the deployed dashboard's exact origin (for exa
 
 Alternatively set `VITE_API_BASE_URL` to a same-site backend API URL (ending in `/api`), add the exact admin origin to the backend `ADMIN_ORIGINS`, and use HTTPS in production. These values are public; JWT secrets belong only in backend environment settings.
 
-Projects use the real backend: list, preview, create, edit, and confirmed delete. The overview project count and recent projects also use saved data. Tasks are also saved in MongoDB; other overview metrics remain demo data.
+Projects use the real backend: list, preview, create, edit, and confirmed delete. Tasks are also saved in MongoDB.
+
+## Overview
+
+The overview reads the authenticated `GET /api/overview` endpoint. Its four cards show saved case studies, open tasks (to do + in progress), completed tasks, and the rounded percentage of completed tasks out of all tasks. An empty task list shows 0% and “No tasks yet.” Revenue, growth, and account placeholders have been removed.
+
+Recent projects sort by their latest save. Recent updates show the latest save for each existing project or task, with actual timestamps and current task statuses; this is not a historical audit log. The API returns three recent projects and up to six updates without full stories or account details.
+
+The overview reloads when opened, on tab focus/visibility, every minute while visible, and with Refresh. Initial loading and request failures show unavailable totals rather than fabricated zeros. A failed refresh preserves the last successful snapshot with a warning and its timestamp. Deploy the backend overview endpoint along with this admin update.
 
 Project name, story, and at least one image are required. Upload JPEG/PNG/WebP files, up to 10 images and 5MB per image. Editing without new images keeps the gallery; choosing new images replaces it on save. Failed saves keep the form open. No Cloudinary credentials are included in the frontend.
 

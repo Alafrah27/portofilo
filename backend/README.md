@@ -135,6 +135,12 @@ Writable fields: `title` (required on creation, 1–200 trimmed characters), `pr
 
 In responses, `projectId` is populated as `{ _id, title }`, or null for standalone tasks and deleted projects. Deleting a project does not delete its tasks. Deadlines are stored as UTC midnight and should be displayed as calendar dates using UTC. Task reads are private and do not use the projects API's public CORS policy.
 
+## Overview API
+
+`GET /api/overview` requires an administrator session and returns `Cache-Control: no-store`. It returns `{ overview: { projects, tasks, recentProjects, activity, asOf } }`. Project totals count all saved case studies. Task totals include `total`, `todo`, `inProgress`, `completed`, `open` (to do + in progress), and `completionRate` (rounded completed / total percentage, or 0 for an empty workspace).
+
+The three most recently updated projects include only their ID, title, cover URL, image count, and update timestamp. Up to six latest project/task saves are returned in `activity`, newest first. Each existing record contributes only its latest save; deleted records disappear. This represents recent updates, not a historical event log. Task status is current, not an inferred completion event. Full project stories, user IDs, account information, and credentials are omitted. A database failure returns an error rather than successful zero totals.
+
 ## Tests
 
 ```sh

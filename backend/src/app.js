@@ -8,6 +8,7 @@ import { HttpError } from './utils/errors.js';
 import { projectRouter } from './routes/projects.js';
 import { createProjectImageStore } from './services/projectImages.js';
 import { taskRouter } from './routes/tasks.js';
+import { overviewRouter } from './routes/overview.js';
 
 export function createApp(config, { imageStore = createProjectImageStore(config) } = {}) {
   const app = express();
@@ -34,6 +35,7 @@ export function createApp(config, { imageStore = createProjectImageStore(config)
   app.get('/health', (_req, res) => res.send('Server is running!'));
   app.use('/api/auth', authRouter(config));
   app.use('/api/tasks', taskRouter(config));
+  app.use('/api/overview', overviewRouter(config));
   app.use(notFound);
   app.use(errorHandler);
   return app;
