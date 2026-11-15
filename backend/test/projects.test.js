@@ -91,6 +91,19 @@ test('schema requires owner, title, description, nonempty images, and complete i
   assert.ok(project.updatedAt instanceof Date);
 });
 
+test('public reads remain available in production before admin origins are configured', async () => {
+  const project = await create();
+  const publicOnlyConfig = getConfig({ NODE_ENV: 'production', MONGO_URL: config.mongoUrl,
+    JWT_ACCESS_SECRET: config.accessSecret, JWT_REFRESH_SECRET: config.refreshSecret });
+  const publicOnlyApp = createApp(publicOnlyConfig, { imageStore: store });
+  for (const path of ['/api/projects', `/api/projects/${project._id}`]) {
+    const response = await request(publicOnlyApp).get(path).set('Origin', 'https://portfolio.example').expect(200);
+    assert.equal(response.headers['access-control-allow-origin'], '*');
+    assert.equal(response.headers['access-control-allow-credentials'], undefined);
+    assert.equal(path === '/api/projects' ? response.body.projects[0]._id : response.body.project._id, String(project._id));
+  }
+});
+
 test('public list and get work without login from any website; newest projects come first', async () => {
   const older = await create({ createdAt: new Date('2024-01-01') });
   const newer = await create();

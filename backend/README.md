@@ -17,7 +17,7 @@ Keep your existing `.env`. For a new checkout, copy `.env.example` to `.env` and
 | `MONGO_DB_NAME` | Optional application database override. Set to `musdar` when the URI selects a system database such as `admin`; this preserves the URI's existing authentication settings. Otherwise the database named in the URI is used. |
 | `JWT_ACCESS_SECRET` | Random signing secret of at least 32 bytes. |
 | `JWT_REFRESH_SECRET` | A different random signing secret of at least 32 bytes. |
-| `ADMIN_ORIGINS` | Comma-separated exact admin origins, without paths or trailing slashes. Defaults to `http://localhost:5173,http://127.0.0.1:5173` in development; required in production. |
+| `ADMIN_ORIGINS` | Comma-separated exact admin origins, without paths or trailing slashes. Defaults to `http://localhost:5173,http://127.0.0.1:5173` in development. Unset or blank in production permits public project reads while blocking browser access to admin endpoints. |
 | `PORT` | HTTP port; defaults to `5000`. |
 | `NODE_ENV` | `development`, `test`, or `production`. |
 
@@ -37,6 +37,14 @@ npm run dev
 The private command asks for an email and a hidden password, then confirmation. Passwords need at least 6 Unicode characters and at most 72 UTF-8 bytes (bcrypt's limit). Duplicate emails are rejected: existing users are never overwritten or silently promoted. Run the command from an interactive terminal; it does not accept passwords through arguments, environment variables, or piped input.
 
 The server starts only after MongoDB is ready. `GET /health` preserves the existing health response. `npm start` runs without nodemon.
+
+## Render deployment
+
+Create a Node web service with root directory `backend`, build command `npm ci`, start command `npm start`, and health check path `/health`. Render supplies `PORT`; do not hardcode it. Set `NODE_ENV=production`, `MONGO_URL`, the two distinct JWT secrets, and any application database override and Cloudinary settings in the service's Environment page. Never put real secrets in Git.
+
+The backend can deploy before the dashboard. If `ADMIN_ORIGINS` is missing, empty, or whitespace-only in production, startup logs a warning and keeps the browser admin allowlist empty. Public project GET requests remain available. It never falls back to localhost or trusts every site. An explicitly configured malformed origin still prevents startup.
+
+Once the admin dashboard is deployed, add its exact origin as `ADMIN_ORIGINS` (for example, `https://admin.example.com`, without `/login` or a trailing slash), then save and deploy the environment change. Use a same-site API hostname or an `/api` reverse proxy for the dashboard's SameSite=Lax session cookies. The public portfolio needs no admin origin; configure its `VITE_API_URL` to this service's URL ending in `/api`.
 
 ## Authentication API
 

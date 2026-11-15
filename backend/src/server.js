@@ -46,6 +46,9 @@ try {
 }
 
 if (config) {
+  if (config.nodeEnv === 'production' && !config.adminOrigins.length) {
+    console.warn('ADMIN_ORIGINS is unset. Public project reads are enabled; browser admin access is blocked until an exact dashboard origin is configured.');
+  }
   start(config).catch(async () => {
     console.error(
       "Could not initialize MongoDB. Check MONGO_URL and database availability.",
