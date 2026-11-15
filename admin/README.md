@@ -20,9 +20,13 @@ Use `npm run create-admin` in the backend folder to provision an administrator. 
 
 ## Deployment
 
-See .env.example for public settings. By default, deploy the SPA with an /api reverse proxy to the backend, and configure history fallback to index.html. Vite's development proxy is not included in the production build.
+`npm run dev` loads `.env.development`: `VITE_API_BASE_URL=http://localhost:5000/api` and `VITE_WEBSITE_URL=http://localhost:5174`. `npm run build` loads `.env.production`: `VITE_API_BASE_URL=/api` and `VITE_WEBSITE_URL=https://musdar.com`. Use `.env.development.local` for personal local overrides; do not put localhost in Netlify's production environment.
 
-Alternatively set VITE_API_BASE_URL to a same-site backend API URL (ending in /api), add the exact admin origin to the backend ADMIN_ORIGINS, and use HTTPS in production. These values are public; JWT secrets belong only in backend/.env.
+For a Netlify site, set its base directory to `admin`. `netlify.toml` sets the build command to `npm run build`, publish directory to `dist`, and the public production environment variables. If setting them in the Netlify dashboard instead, use the same values above and rebuild after changes. The generated `dist/_redirects` proxies `/api/*` to `https://portofilo-5717.onrender.com/api/:splat` before applying the SPA history fallback. The proxy keeps administrator cookies on the dashboard's origin.
+
+On Render, set `ADMIN_ORIGINS` to the deployed dashboard's exact origin (for example, `https://your-admin-site.netlify.app`, without `/login` or a trailing slash), then deploy the environment change. This is required for browser sign-in. Keep the production admin's `VITE_API_BASE_URL=/api` when using Netlify; pointing it directly at the unrelated `onrender.com` origin would prevent SameSite=Lax session cookies from working.
+
+Alternatively set `VITE_API_BASE_URL` to a same-site backend API URL (ending in `/api`), add the exact admin origin to the backend `ADMIN_ORIGINS`, and use HTTPS in production. These values are public; JWT secrets belong only in backend environment settings.
 
 Projects use the real backend: list, preview, create, edit, and confirmed delete. The overview project count and recent projects also use saved data. Tasks are also saved in MongoDB; other overview metrics remain demo data.
 

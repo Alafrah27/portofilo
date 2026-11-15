@@ -1,0 +1,8 @@
+# Set the Netlify site's base directory to admin.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  VITE_API_BASE_URL = "/api"
+  VITE_WEBSITE_URL = "https://musdar.com"
