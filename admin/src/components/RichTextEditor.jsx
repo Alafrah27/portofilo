@@ -1,4 +1,5 @@
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEffect, useState } from 'react';
+import { useEditor, EditorContent, useEditorState } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
@@ -7,289 +8,188 @@ import { Table } from '@tiptap/extension-table';
 import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
-import { 
-  Bold, Italic, Underline as UnderlineIcon, 
-  List, ListOrdered, Quote, Heading1, Heading2, 
-  Link as LinkIcon, Undo, Redo, Table as TableIcon,
-  PlusSquare, Trash2
+import {
+  Bold, Italic, Underline as UnderlineIcon, Strikethrough, RemoveFormatting,
+  List, ListOrdered, Quote, Code, SquareCode, Minus,
+  Link as LinkIcon, Unlink, Undo, Redo, Table as TableIcon, X,
 } from 'lucide-react';
+import './RichTextEditor.css';
+
+const ToolButton = ({ label, active, disabled, onClick, children }) => (
+  <button
+    type="button"
+    title={label}
+    aria-label={label}
+    aria-pressed={active}
+    disabled={disabled}
+    onMouseDown={(event) => event.preventDefault()}
+    onClick={onClick}
+    className={`editor-tool ${active ? 'is-active' : ''}`}
+  >{children}</button>
+);
 
 const MenuBar = ({ editor }) => {
-  if (!editor) {
-    return null;
-  }
+  const [showLink, setShowLink] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [linkError, setLinkError] = useState('');
+  const state = useEditorState({
+    editor,
+    selector: ({ editor: current }) => ({
+      block: current.isActive('heading') ? String(current.getAttributes('heading').level) : 'p',
+      bold: current.isActive('bold'),
+      italic: current.isActive('italic'),
+      underline: current.isActive('underline'),
+      strike: current.isActive('strike'),
+      code: current.isActive('code'),
+      codeBlock: current.isActive('codeBlock'),
+      bulletList: current.isActive('bulletList'),
+      orderedList: current.isActive('orderedList'),
+      blockquote: current.isActive('blockquote'),
+      link: current.isActive('link'),
+      table: current.isActive('table'),
+      undo: current.can().undo(),
+      redo: current.can().redo(),
+    }),
+  });
 
-  const addLink = () => {
-    const url = window.prompt('URL');
-    if (url) {
-      editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-    }
+  const closeLink = () => {
+    setShowLink(false);
+    setLinkError('');
+    editor.chain().focus().run();
   };
 
-  const insertTable = () => {
-    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  const applyLink = () => {
+    const value = linkUrl.trim();
+    const href = /^[a-z][a-z\d+.-]*:/i.test(value) ? value : 'https://' + value;
+    try {
+      const parsed = new URL(href);
+      if (!value || !['http:', 'https:', 'mailto:', 'tel:'].includes(parsed.protocol) || (!parsed.pathname && !parsed.hostname)) {
+        setLinkError('Enter a valid web, email, or phone link.');
+        return;
+      }
+    } catch {
+      setLinkError('Enter a valid link, such as https://example.com.');
+      return;
+    }
+    editor.chain().focus().extendMarkRange('link').setLink({ href }).run();
+    closeLink();
   };
 
   return (
-    <div className="flex flex-wrap gap-1 p-2 border-b border-[#2a2a2e] bg-[#0a0a0b] rounded-t-xl sticky top-0 z-10">
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('bold') ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Bold"
-      >
-        <Bold size={18} />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('italic') ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Italic"
-      >
-        <Italic size={18} />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('underline') ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Underline"
-      >
-        <UnderlineIcon size={18} />
-      </button>
-      
-      <div className="w-[1px] h-6 bg-[#2a2a2e] mx-1 self-center" />
-      
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('heading', { level: 1 }) ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Heading 1"
-      >
-        <Heading1 size={18} />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Heading 2"
-      >
-        <Heading2 size={18} />
-      </button>
-      
-      <div className="w-[1px] h-6 bg-[#2a2a2e] mx-1 self-center" />
-      
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('bulletList') ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Bullet List"
-      >
-        <List size={18} />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('orderedList') ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Ordered List"
-      >
-        <ListOrdered size={18} />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('blockquote') ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Blockquote"
-      >
-        <Quote size={18} />
-      </button>
-      
-      <div className="w-[1px] h-6 bg-[#2a2a2e] mx-1 self-center" />
-      
-      <button
-        type="button"
-        onClick={addLink}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('link') ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Add Link"
-      >
-        <LinkIcon size={18} />
-      </button>
+    <div className="editor-toolbar">
+      <div role="group" aria-label="Text formatting" className="editor-tool-row">
+        <select
+          aria-label="Text style"
+          title="Text style"
+          className="editor-style-select"
+          value={state.block}
+          onChange={(event) => {
+            if (event.target.value === 'p') editor.chain().focus().setParagraph().run();
+            else editor.chain().focus().setHeading({ level: Number(event.target.value) }).run();
+          }}
+        >
+          <option value="p">P · Paragraph</option>
+          {[1, 2, 3, 4, 5, 6].map((level) => <option key={level} value={level}>H{level} · Heading {level}</option>)}
+        </select>
+        <span className="editor-tool-divider" aria-hidden="true" />
+        <ToolButton label="Bold" active={state.bold} onClick={() => editor.chain().focus().toggleBold().run()}><Bold size={16} /></ToolButton>
+        <ToolButton label="Italic" active={state.italic} onClick={() => editor.chain().focus().toggleItalic().run()}><Italic size={16} /></ToolButton>
+        <ToolButton label="Underline" active={state.underline} onClick={() => editor.chain().focus().toggleUnderline().run()}><UnderlineIcon size={16} /></ToolButton>
+        <ToolButton label="Strikethrough" active={state.strike} onClick={() => editor.chain().focus().toggleStrike().run()}><Strikethrough size={16} /></ToolButton>
+        <ToolButton label="Clear formatting" onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}><RemoveFormatting size={16} /></ToolButton>
+        <span className="editor-tool-spacer" />
+        <ToolButton label="Undo" disabled={!state.undo} onClick={() => editor.chain().focus().undo().run()}><Undo size={16} /></ToolButton>
+        <ToolButton label="Redo" disabled={!state.redo} onClick={() => editor.chain().focus().redo().run()}><Redo size={16} /></ToolButton>
+      </div>
+      <div role="group" aria-label="Insert and structure" className="editor-tool-row editor-tool-row-secondary">
+        <ToolButton label="Bullet list" active={state.bulletList} onClick={() => editor.chain().focus().toggleBulletList().run()}><List size={16} /></ToolButton>
+        <ToolButton label="Numbered list" active={state.orderedList} onClick={() => editor.chain().focus().toggleOrderedList().run()}><ListOrdered size={16} /></ToolButton>
+        <ToolButton label="Blockquote" active={state.blockquote} onClick={() => editor.chain().focus().toggleBlockquote().run()}><Quote size={16} /></ToolButton>
+        <span className="editor-tool-divider" aria-hidden="true" />
+        <ToolButton label="Inline code" active={state.code} onClick={() => editor.chain().focus().toggleCode().run()}><Code size={16} /></ToolButton>
+        <ToolButton label="Code block" active={state.codeBlock} onClick={() => editor.chain().focus().toggleCodeBlock().run()}><SquareCode size={16} /></ToolButton>
+        <ToolButton label="Horizontal divider" onClick={() => editor.chain().focus().setHorizontalRule().run()}><Minus size={16} /></ToolButton>
+        <span className="editor-tool-divider" aria-hidden="true" />
+        <ToolButton label={state.link ? 'Edit link' : 'Add link'} active={state.link || showLink} onClick={() => { setLinkUrl(editor.getAttributes('link').href || ''); setLinkError(''); setShowLink((show) => !show); }}><LinkIcon size={16} /></ToolButton>
+        <ToolButton label="Remove link" disabled={!state.link} onClick={() => { editor.chain().focus().extendMarkRange('link').unsetLink().run(); setShowLink(false); }}><Unlink size={16} /></ToolButton>
+        <ToolButton label="Insert table" active={state.table} disabled={state.table} onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}><TableIcon size={16} /></ToolButton>
+      </div>
 
-      <button
-        type="button"
-        onClick={insertTable}
-        className={`p-2 rounded hover:bg-[#1c1c1f] transition-colors ${editor.isActive('table') ? 'bg-[#10b981]/20 text-[#10b981]' : 'text-gray-400'}`}
-        title="Insert Table"
-      >
-        <TableIcon size={18} />
-      </button>
-      
-      {editor.isActive('table') && (
-        <div className="flex items-center gap-1 bg-[#1c1c1f]/50 px-2 py-1 rounded-lg border border-[#2a2a2e] ml-1 animate-in fade-in zoom-in-95 duration-200">
-          <button
-            type="button"
-            onClick={() => editor.chain().focus().addRowAfter().run()}
-            className="p-1.5 hover:bg-[#10b981]/20 hover:text-[#10b981] text-gray-400 rounded transition-all"
-            title="Add Row Below"
-          >
-            <PlusSquare size={16} />
-          </button>
-          <button
-            type="button"
-            onClick={() => editor.chain().focus().deleteRow().run()}
-            className="p-1.5 hover:bg-red-500/20 hover:text-red-500 text-gray-400 rounded transition-all"
-            title="Delete Row"
-          >
-            <Trash2 size={16} />
-          </button>
-          <div className="w-[1px] h-4 bg-[#2a2a2e] mx-0.5" />
-          <button
-            type="button"
-            onClick={() => editor.chain().focus().addColumnAfter().run()}
-            className="p-1.5 hover:bg-[#10b981]/20 hover:text-[#10b981] text-gray-400 rounded transition-all"
-            title="Add Column After"
-          >
-            <PlusSquare size={16} className="rotate-90" />
-          </button>
-          <button
-            type="button"
-            onClick={() => editor.chain().focus().deleteColumn().run()}
-            className="p-1.5 hover:bg-red-500/20 hover:text-red-500 text-gray-400 rounded transition-all"
-            title="Delete Column"
-          >
-            <Trash2 size={16} className="rotate-90" />
-          </button>
+      {showLink && (
+        <div role="group" aria-label="Link editor" className="editor-link-panel" onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeLink(); } }}>
+          <div className="editor-link-controls">
+            <input
+              autoFocus
+              aria-label="Link URL"
+              aria-invalid={Boolean(linkError)}
+              aria-describedby={linkError ? 'editor-link-error' : undefined}
+              type="text"
+              inputMode="url"
+              placeholder="https://example.com"
+              value={linkUrl}
+              onChange={(event) => { setLinkUrl(event.target.value); setLinkError(''); }}
+              onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); applyLink(); } }}
+            />
+            <button type="button" className="editor-text-tool" onClick={applyLink}>Apply link</button>
+            <ToolButton label="Cancel link" onClick={closeLink}><X size={15} /></ToolButton>
+          </div>
+          {linkError && <p role="alert" id="editor-link-error" className="editor-link-error">{linkError}</p>}
         </div>
       )}
-      
-      <div className="flex-1" />
-      
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor.can().undo()}
-        className="p-2 rounded hover:bg-[#1c1c1f] text-gray-400 disabled:opacity-30 transition-colors"
-        title="Undo"
-      >
-        <Undo size={18} />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().redo().run()}
-        disabled={!editor.can().redo()}
-        className="p-2 rounded hover:bg-[#1c1c1f] text-gray-400 disabled:opacity-30 transition-colors"
-        title="Redo"
-      >
-        <Redo size={18} />
-      </button>
+
+      {state.table && (
+        <div role="group" aria-label="Table controls" className="editor-table-tools">
+          <button type="button" className="editor-text-tool" onClick={() => editor.chain().focus().addRowAfter().run()}>+ Row</button>
+          <button type="button" className="editor-text-tool" onClick={() => editor.chain().focus().addColumnAfter().run()}>+ Column</button>
+          <button type="button" className="editor-text-tool" onClick={() => editor.chain().focus().toggleHeaderRow().run()}>Header row</button>
+          <button type="button" className="editor-text-tool" onClick={() => editor.chain().focus().deleteRow().run()}>Delete row</button>
+          <button type="button" className="editor-text-tool" onClick={() => editor.chain().focus().deleteColumn().run()}>Delete column</button>
+          <button type="button" className="editor-text-tool editor-delete-tool" onClick={() => editor.chain().focus().deleteTable().run()}>Delete table</button>
+        </div>
+      )}
     </div>
   );
 };
 
-const RichTextEditor = ({ content, onChange, placeholder = 'Start typing...' }) => {
+const EditorCount = ({ editor }) => {
+  const text = useEditorState({ editor, selector: ({ editor: current }) => current.getText({ blockSeparator: ' ' }) });
+  const wordCount = text.trim() ? text.trim().split(/\s+/u).length : 0;
+  const characterCount = Array.from(text.trimEnd()).length;
+  return <div className="editor-count"><span>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span><span>{characterCount} {characterCount === 1 ? 'character' : 'characters'}</span></div>;
+};
+
+const RichTextEditor = ({ content, onChange, placeholder = 'Start typing...', ariaLabelledBy, readOnly = false, disabled = false }) => {
   const editor = useEditor({
+    editable: !readOnly && !disabled,
     extensions: [
-      StarterKit,
+      StarterKit.configure({ link: false, underline: false, heading: { levels: [1, 2, 3, 4, 5, 6] } }),
       Underline,
-      Link.configure({
-        openOnClick: false,
-      }),
-      Placeholder.configure({
-        placeholder,
-      }),
-      Table.configure({
-        resizable: true,
-      }),
+      Link.configure({ openOnClick: false, defaultProtocol: 'https' }),
+      Placeholder.configure({ placeholder }),
+      Table.configure({ resizable: true }),
       TableRow,
       TableHeader,
       TableCell,
     ],
     content,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+    editorProps: {
+      attributes: {
+        role: 'textbox',
+        'aria-readonly': String(readOnly || disabled),
+        'aria-multiline': 'true',
+        ...(ariaLabelledBy ? { 'aria-labelledby': ariaLabelledBy } : { 'aria-label': 'Rich text editor' }),
+      },
     },
+    onUpdate: ({ editor: current }) => onChange(current.getHTML()),
   });
 
+  useEffect(() => { editor?.setEditable(!readOnly && !disabled); }, [editor, readOnly, disabled]);
+
   return (
-    <div className="w-full bg-[#121214] border border-[#2a2a2e] rounded-xl focus-within:border-[#10b981] focus-within:ring-1 focus-within:ring-[#10b981] transition-all overflow-hidden group">
-      <MenuBar editor={editor} />
-      <div className="p-4 min-h-[250px] prose prose-invert prose-emerald max-w-none">
-        <EditorContent editor={editor} className="outline-none" />
-      </div>
-      
-      <style dangerouslySetInnerHTML={{ __html: `
-        .tiptap p.is-editor-empty:first-child::before {
-          content: attr(data-placeholder);
-          float: left;
-          color: #6b7280;
-          pointer-events: none;
-          height: 0;
-        }
-        .tiptap {
-          outline: none !important;
-          min-height: 250px;
-        }
-        .tiptap p {
-          margin: 0.5em 0;
-        }
-        .tiptap ul {
-          list-style-type: disc;
-          padding-left: 1.5em;
-        }
-        .tiptap ol {
-          list-style-type: decimal;
-          padding-left: 1.5em;
-        }
-        .tiptap blockquote {
-          border-left: 3px solid #10b981;
-          padding-left: 1em;
-          font-style: italic;
-          color: #9ca3af;
-        }
-        .tiptap h1 { font-size: 1.5rem; font-weight: bold; }
-        .tiptap h2 { font-size: 1.25rem; font-weight: bold; }
-        .tiptap a { color: #10b981; text-decoration: underline; }
-        
-        /* Table Styles */
-        .tiptap table {
-          border-collapse: collapse;
-          table-layout: fixed;
-          width: 100%;
-          margin: 0;
-          overflow: hidden;
-          border: 1px solid #2a2a2e;
-          border-radius: 8px;
-        }
-        .tiptap table td, .tiptap table th {
-          min-width: 1em;
-          border: 1px solid #2a2a2e;
-          padding: 3px 5px;
-          vertical-align: top;
-          box-sizing: border-box;
-          position: relative;
-        }
-        .tiptap table th {
-          font-weight: bold;
-          text-align: left;
-          background-color: #1c1c1f;
-        }
-        .tiptap table .selectedCell:after {
-          z-index: 2;
-          content: "";
-          position: absolute;
-          left: 0; right: 0; top: 0; bottom: 0;
-          background: rgba(16, 185, 129, 0.1);
-          pointer-events: none;
-        }
-        .tiptap table .column-resize-handle {
-          position: absolute;
-          right: -2px;
-          top: 0;
-          bottom: -2px;
-          width: 4px;
-          background-color: #10b981;
-          pointer-events: none;
-        }
-      `}} />
+    <div className="rich-editor">
+      {editor && !readOnly && <MenuBar editor={editor} />}
+      <div className="editor-writing-area"><EditorContent editor={editor} /></div>
+      {editor && <EditorCount editor={editor} />}
     </div>
   );
 };

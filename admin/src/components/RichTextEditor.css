@@ -1,0 +1,52 @@
+.rich-editor { width: 100%; overflow: hidden; border: 1px solid #2a2a2e; border-radius: 10px; background: #121214; transition: border-color .2s; }
+.rich-editor:focus-within { border-color: #10b981; }
+.editor-toolbar { background: #0a0a0b; border-bottom: 1px solid #2a2a2e; padding: 6px; }
+.editor-tool-row { display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+.editor-tool-row-secondary { margin-top: 4px; padding-top: 4px; border-top: 1px solid #202023; }
+.editor-tool { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 30px; height: 30px; border: 0; border-radius: 5px; background: transparent; color: #9ca3af; transition: color .15s, background .15s; }
+.editor-tool:hover:not(:disabled), .editor-text-tool:hover { background: #1c1c1f; color: #fff; }
+.editor-tool.is-active { color: #34d399; background: #10b9811a; }
+.editor-tool:disabled { cursor: default; opacity: .3; }
+.editor-tool-divider { flex-shrink: 0; width: 1px; height: 16px; margin-inline: 4px; background: #2a2a2e; }
+.editor-tool-spacer { flex: 1; }
+.editor-style-select { min-width: 0; width: 135px; height: 30px; padding: 0 6px; border: 1px solid #2a2a2e; border-radius: 5px; background: #121214; color: #d1d5db; font: inherit; font-size: 11px; cursor: pointer; }
+.editor-table-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-top: 6px; padding-top: 6px; border-top: 1px solid #2a2a2e; }
+.editor-text-tool { min-height: 28px; padding: 4px 7px; border: 1px solid #303035; border-radius: 5px; background: #121214; color: #d1d5db; font: inherit; font-size: 10px; transition: color .15s, background .15s; }
+.editor-delete-tool { color: #f87171; }
+.editor-link-panel { padding: 8px 2px 2px; }
+.editor-link-controls { display: flex; align-items: center; gap: 6px; }
+.editor-link-controls input { min-width: 0; flex: 1; height: 32px; padding: 6px 9px; border: 1px solid #303035; border-radius: 5px; background: #121214; color: #fff; font-size: 12px; }
+.editor-link-controls input::placeholder { color: #777781; }
+.editor-link-error { padding: 6px 0 2px; color: #f87171; font-size: 11px; }
+.editor-writing-area { max-height: min(46dvh, 440px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #39393e #121214; scrollbar-gutter: stable; padding: 16px; color: #d1d5db; font-size: 14px; line-height: 1.75; overflow-wrap: anywhere; }
+.rich-editor .tiptap { min-height: 250px; outline: none; }
+.rich-editor .tiptap:focus-visible { outline: none; }
+.rich-editor .tiptap p.is-editor-empty:first-child::before { content: attr(data-placeholder); float: left; height: 0; color: #777781; pointer-events: none; }
+.rich-editor .tiptap p { margin: .5em 0; }
+.rich-editor .tiptap :is(h1,h2,h3,h4,h5,h6) { color: #f9fafb; font-weight: 600; line-height: 1.35; margin: 1em 0 .4em; }
+.rich-editor .tiptap h1 { font-size: 2em; }
+.rich-editor .tiptap h2 { font-size: 1.65em; }
+.rich-editor .tiptap h3 { font-size: 1.4em; }
+.rich-editor .tiptap h4 { font-size: 1.2em; }
+.rich-editor .tiptap h5 { font-size: 1.05em; }
+.rich-editor .tiptap h6 { font-size: .9em; }
+.rich-editor .tiptap > :first-child { margin-top: 0; }
+.rich-editor .tiptap ul { list-style: disc; padding-inline-start: 1.5em; }
+.rich-editor .tiptap ol { list-style: decimal; padding-inline-start: 1.5em; }
+.rich-editor .tiptap blockquote { border-inline-start: 3px solid #10b981; padding-inline-start: 1em; margin: 1em 0; color: #9ca3af; }
+.rich-editor .tiptap a { color: #34d399; text-decoration: underline; text-underline-offset: 3px; }
+.rich-editor .tiptap s { text-decoration: line-through; }
+.rich-editor .tiptap code { padding: .15em .3em; border: 1px solid #303035; border-radius: 4px; background: #1c1c1f; color: #6ee7b7; font-family: ui-monospace, monospace; font-size: .85em; }
+.rich-editor .tiptap pre { margin: 1em 0; padding: 14px; overflow-x: auto; border: 1px solid #303035; border-radius: 6px; background: #090909; white-space: pre; }
+.rich-editor .tiptap pre code { padding: 0; border: 0; background: none; color: #d1d5db; }
+.rich-editor .tiptap hr { margin: 1.5em 0; border: 0; border-top: 1px solid #39393e; }
+.rich-editor .tableWrapper { margin: 1em 0; overflow-x: auto; }
+.rich-editor .tiptap table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.rich-editor .tiptap :is(td,th) { position: relative; box-sizing: border-box; min-width: 40px; padding: 6px 8px; vertical-align: top; border: 1px solid #39393e; }
+.rich-editor .tiptap th { background: #1c1c1f; font-weight: 600; text-align: start; }
+.rich-editor .tiptap .selectedCell::after { position: absolute; inset: 0; z-index: 2; content: ''; background: #10b9811a; pointer-events: none; }
+.rich-editor .tiptap .column-resize-handle { position: absolute; top: 0; right: -2px; bottom: -2px; width: 4px; background: #10b981; pointer-events: none; }
+.rich-editor .resize-cursor { cursor: col-resize; }
+.editor-count { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px; padding: 8px 12px; border-top: 1px solid #242427; color: #777781; font-size: 10px; }
+@media (max-width: 480px) { .editor-style-select { width: 100%; margin-bottom: 4px; } .editor-tool { width: 28px; } .editor-style-select + .editor-tool-divider { display: none; } }
+@media (prefers-reduced-motion: reduce) { .rich-editor, .editor-tool, .editor-text-tool { transition: none; } }

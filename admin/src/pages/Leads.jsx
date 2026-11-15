@@ -1,41 +1,25 @@
 import { useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import LeadTable from '../components/leads/LeadTable';
 
+const leads = [
+  { id: 1, name: 'Sarah Jenkins', email: 'sarah.j@example.com', type: 'SaaS Development', budget: '$50k - $100k', status: 'new', time: '2 hours ago' },
+  { id: 2, name: 'Michael Chen', email: 'm.chen@startup.io', type: 'Mobile App', budget: '$20k - $50k', status: 'contacted', time: '5 hours ago' },
+  { id: 3, name: 'Ahmed Al-Farsi', email: 'ahmed@enterprise.sa', type: 'Web Platform', budget: '$100k+', status: 'closed', time: '1 day ago' },
+];
 const Leads = () => {
-  const [leads, setLeads] = useState([
-    { id: 1, name: 'Sarah Jenkins', email: 'sarah.j@example.com', type: 'SaaS Development', budget: '$50k - $100k', status: 'new', time: '2 hours ago' },
-    { id: 2, name: 'Michael Chen', email: 'm.chen@startup.io', type: 'Mobile App', budget: '$20k - $50k', status: 'contacted', time: '5 hours ago' },
-    { id: 3, name: 'Ahmed Al-Farsi', email: 'ahmed@enterprise.sa', type: 'Web Platform', budget: '$100k+', status: 'closed', time: '1 day ago' },
-  ]);
-
+  const [search, setSearch] = useState('');
+  const filteredLeads = leads.filter((lead) => `${lead.name} ${lead.email} ${lead.type}`.toLowerCase().includes(search.toLowerCase()));
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-8 h-[2px] bg-[#06b6d4]"></span>
-            <span className="text-[10px] font-bold text-[#06b6d4] uppercase tracking-[0.3em]">Client Pipeline</span>
-          </div>
-          <h2 className="text-3xl lg:text-4xl font-black text-white tracking-tight">Leads & Inquiries</h2>
-          <p className="text-gray-400 mt-2 max-w-md text-sm leading-relaxed">
-            Manage your sales funnel and incoming project requests. Convert conversations into successful partnerships.
-          </p>
-        </div>
-        <div className="flex flex-col xs:flex-row items-center gap-3 w-full sm:w-auto">
-          <div className="flex items-center bg-[#121214] border border-[#1c1c1f] rounded-2xl px-4 py-3.5 text-gray-500 focus-within:border-[#06b6d4]/50 transition-all w-full sm:w-64">
-            <Search size={18} />
-            <input type="text" placeholder="Search leads..." className="bg-transparent border-none focus:ring-0 text-sm ml-2 text-white placeholder-gray-600 w-full" />
-          </div>
-          <button className="btn-primary w-full xs:w-auto gap-2.5 px-8 py-3.5 rounded-2xl text-sm font-bold flex justify-center items-center">
-            <Plus size={18} /> Add Lead
-          </button>
-        </div>
+    <div className="animate-in space-y-8">
+      <div className="flex flex-col justify-between gap-6 xl:flex-row xl:items-end">
+        <div><p className="eyebrow mb-3">The next opportunity</p><h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Leads <span className="gradient-text">& inquiries.</span></h1><p className="mt-3 max-w-lg text-[13px] leading-6 text-gray-400">Turn new conversations into lasting partnerships.</p></div>
+        <div className="flex w-full items-center gap-3 rounded-lg border border-[#303035] bg-dark-700 px-4 py-3 xl:w-64"><Search size={17} className="shrink-0 text-gray-500" /><input type="search" aria-label="Search leads" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search leads..." className="min-w-0 w-full bg-transparent text-xs text-white placeholder:text-gray-500" /></div>
       </div>
-
-      <LeadTable leads={leads} />
+      <LeadTable leads={filteredLeads} />
+      {filteredLeads.length === 0 && <p className="py-6 text-center text-sm text-gray-400">No inquiries match your search.</p>}
+      <p className="text-xs text-gray-500">Showing {filteredLeads.length} of {leads.length} inquiries · Demo workspace</p>
     </div>
   );
 };
-
 export default Leads;

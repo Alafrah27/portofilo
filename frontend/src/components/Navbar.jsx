@@ -108,7 +108,7 @@ const Navbar = ({ activeSection }) => {
           </button>
 
           <a
-            href="#contact"
+            href="/#contact"
             onClick={(e) => handleNavClick(e, 'contact')}
             className="btn btn-primary text-sm px-5 py-2.5"
           >
@@ -132,7 +132,7 @@ const Navbar = ({ activeSection }) => {
               </a>
             ))}
             <a
-              href="#contact"
+              href="/#contact"
               onClick={(e) => handleNavClick(e, 'contact')}
               className="btn btn-primary w-full mt-4 text-center justify-center"
             >

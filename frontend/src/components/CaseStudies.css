@@ -1,0 +1,31 @@
+.case-study-story {
+  max-width: 72ch;
+  margin-inline: auto;
+  color: #9ca3af;
+  font-size: 0.9375rem;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.case-study-story :is(h1, h2, h3, h4, h5, h6) {
+  margin-block: 2rem 0.875rem;
+  color: #f9fafb;
+  line-height: 1.4;
+  font-size: 1.35rem;
+}
+
+.case-study-story > :first-child { margin-top: 0; }
+.case-study-story p { margin-block: 0.875rem; }
+.case-study-story :is(strong, b) { color: #e5e7eb; }
+.case-study-story ul { list-style: disc; padding-inline-start: 1.5rem; }
+.case-study-story ol { list-style: decimal; padding-inline-start: 1.5rem; }
+.case-study-story li { padding-inline-start: 0.25rem; }
+.case-study-story li::marker { color: #34d399; }
+.case-study-story a { color: #6ee7b7; text-decoration: underline; text-underline-offset: 3px; }
+.case-study-story blockquote { border-inline-start: 2px solid #10b981; padding-inline-start: 1rem; margin-block: 1.5rem; }
+.case-study-story :is(pre, code) { background: #121214; border-radius: 0.25rem; font-size: 0.875em; }
+.case-study-story code { padding: 0.15rem 0.35rem; }
+.case-study-story pre { overflow-x: auto; padding: 1rem; }
+.case-study-story hr { border-color: #29292d; margin-block: 1.5rem; }
+.case-study-story table { display: block; overflow-x: auto; border-collapse: collapse; margin-block: 1.5rem; }
+.case-study-story :is(th, td) { border: 1px solid #29292d; padding: 0.5rem 0.75rem; }

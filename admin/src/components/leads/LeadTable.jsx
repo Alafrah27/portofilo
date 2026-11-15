@@ -4,7 +4,7 @@ import { Eye, MessageSquare, Trash2 } from 'lucide-react';
 const LeadStatusBadge = ({ status }) => {
   switch(status) {
     case 'new': return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/20 shadow-[0_0_10px_rgba(6,182,212,0.1)]">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/20">
         ● New Lead
       </span>
     );
@@ -29,15 +29,15 @@ const LeadStatusBadge = ({ status }) => {
 const LeadAvatar = ({ name }) => {
   const initials = name.split(' ').map(n => n[0]).join('');
   return (
-    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0a0a0b] to-[#1c1c1f] border border-white/5 flex items-center justify-center text-xs font-bold text-gray-300 shadow-inner group-hover:border-[#10b981]/30 transition-colors">
+    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0a0a0b] to-[#1c1c1f] border border-white/5 flex items-center justify-center text-xs font-bold text-gray-300 group-hover:border-[#10b981]/30 transition-colors">
       {initials}
     </div>
   );
 };
 
 const LeadRow = ({ lead, index }) => (
-  <motion.tr 
-    key={lead.id} 
+  <motion.tr
+    key={lead.id}
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: index * 0.1 }}
@@ -87,11 +87,11 @@ const LeadTable = ({ leads }) => {
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="bg-[#0a0a0b]/50 border-b border-[#1c1c1f]">
-              <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Prospect Details</th>
-              <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Interest</th>
-              <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Budget</th>
-              <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Status</th>
-              <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] text-right">Actions</th>
+              <th className="p-6 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Prospect Details</th>
+              <th className="p-6 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Interest</th>
+              <th className="p-6 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Budget</th>
+              <th className="p-6 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="p-6 text-[10px] font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#1c1c1f]">
